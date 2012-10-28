@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 
-class PitConfigurationFormPopulatorImplTest extends Specification {
+class PitConfigurationFormPopulatorTest extends Specification {
 
     PitConfigurationFormPopulator pitConfigurationFormPopulator = new PitConfigurationFormPopulator()
 

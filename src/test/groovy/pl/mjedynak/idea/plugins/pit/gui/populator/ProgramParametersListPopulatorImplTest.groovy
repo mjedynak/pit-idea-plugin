@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ParametersList
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 
-class ProgramParametersListPopulatorImplTest extends Specification {
+class ProgramParametersListPopulatorTest extends Specification {
 
     ProgramParametersListPopulator parametersListPopulator = new ProgramParametersListPopulator()
 
