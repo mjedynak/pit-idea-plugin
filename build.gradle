@@ -1,0 +1,33 @@
+apply plugin: 'groovy'
+// apply plugin: 'codenarc'
+apply plugin: 'idea'
+apply from: 'idea.gradle'
+// apply from: 'cobertura.gradle'
+
+// --- properties ---
+ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 11.1'
+ext.ideaJdk = 'IDEA IC-117.418'
+ext.sourceCompatibility = 1.6
+// --- properties ---
+
+// --- cobertura ---
+// cobertura.dependsOn test
+// check.dependsOn cobertura
+// --- cobertura ---
+
+
+repositories {
+    mavenCentral()
+	mavenLocal()
+//    mavenRepo url: 'http://m2repo.spockframework.org/snapshots'
+}
+
+dependencies {
+    compile 'org.pitest:pitest:0.28'
+	compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
+    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+//    testCompile 'org.objenesis:objenesis:1.2'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.8.5'
+}
+
+metaInf << files('/META-INF/plugin.xml')

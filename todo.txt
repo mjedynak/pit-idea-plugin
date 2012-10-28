@@ -1,0 +1,5 @@
+- Rerun bug - no module found
+- Right click menu - option to run mutation for single class
+- painter
+- option to clear painted lines
+- xml output parser
