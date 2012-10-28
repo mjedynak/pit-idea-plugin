@@ -10,7 +10,6 @@ import com.intellij.execution.configurations.JavaCommandLineState;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.JavaRunConfigurationModule;
 import com.intellij.execution.configurations.ModuleBasedConfiguration;
-import com.intellij.execution.configurations.ParametersList;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
@@ -31,15 +30,11 @@ import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
-import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
-import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
-import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulatorImpl;
 import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
-import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulatorImpl;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -135,6 +130,6 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
         DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
                 = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()));
         return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
-                defaultArgumentsContainerFactory, new PitConfigurationFormPopulatorImpl(), new ProgramParametersListPopulatorImpl());
+                defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
     }
 }

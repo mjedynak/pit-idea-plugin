@@ -15,8 +15,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
-import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulatorImpl;
-import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulatorImpl;
+import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
+import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
 
 import javax.swing.Icon;
 
@@ -34,7 +34,7 @@ public class PitConfigurationType implements ConfigurationType {
                 DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
                         = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(project), PsiManager.getInstance(project));
                 return new PitRunConfiguration("Pit Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
-                        new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulatorImpl(), new ProgramParametersListPopulatorImpl());
+                        new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
             }
 
             @Override

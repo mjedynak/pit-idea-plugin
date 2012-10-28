@@ -7,7 +7,7 @@ import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 
 class ProgramParametersListPopulatorImplTest extends Specification {
 
-    ProgramParametersListPopulator parametersListPopulator = new ProgramParametersListPopulatorImpl()
+    ProgramParametersListPopulator parametersListPopulator = new ProgramParametersListPopulator()
 
     def "should populate program parameter list with pit configuration form content"() {
         ParametersList programParametersList = Mock()
