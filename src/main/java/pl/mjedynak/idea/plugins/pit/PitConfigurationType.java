@@ -67,7 +67,7 @@ public class PitConfigurationType implements ConfigurationType {
 
     @NotNull
     public String getId() {
-        return "Pit Runner Id";
+        return "Pit";
     }
 
     @Nullable

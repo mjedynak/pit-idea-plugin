@@ -28,7 +28,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
@@ -47,7 +49,13 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     private DefaultArgumentsContainerFactory defaultArgumentsContainerFactory;
     private PitConfigurationFormPopulator pitConfigurationFormPopulator;
     private ProgramParametersListPopulator programParametersListPopulator;
+    private PsiElement psiElement;
 
+    public void setPsiElement(PsiElement psiElement) {
+        this.psiElement = psiElement;
+
+
+    }
 
     public PitRunConfiguration(final String name, final Project project, ConfigurationFactory configurationFactory, PitConfigurationForm pitConfigurationForm,
                                DefaultArgumentsContainerFactory defaultArgumentsContainerFactory, PitConfigurationFormPopulator pitConfigurationFormPopulator,
@@ -61,7 +69,10 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
+        // TODO:
+        if (pitConfigurationForm.getReportDir().equals("")) { // if form wasn't used before
+            pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
+        }
         SettingsEditorGroup<PitRunConfiguration> group = new SettingsEditorGroup<PitRunConfiguration>();
         group.addEditor(ExecutionBundle.message("run.configuration.configuration.tab.title"), pitConfigurationForm);
         JavaRunConfigurationExtensionManager.getInstance().appendEditors(this, group);
@@ -86,14 +97,21 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
         JavaCommandLineState javaCommandLineState = new JavaCommandLineState(env) {
             @Override
             protected JavaParameters createJavaParameters() throws ExecutionException {
+                pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
                 JavaParameters javaParameters = new JavaParameters();
-                final RunConfigurationModule runConfigurationModule = getConfigurationModule();
-                final int classPathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS;
+                RunConfigurationModule runConfigurationModule = getConfigurationModule();
+                int classPathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS;
                 JavaParametersUtil.configureModule(runConfigurationModule, javaParameters, classPathType, null);
                 javaParameters.setMainClass(PIT_MAIN_CLASS);
+                if (psiElement != null) { // if element was set from producer
+                    pitConfigurationForm.setTargetClasses(((PsiJavaFileImpl) psiElement).getClasses()[0].getQualifiedName());
+                }
                 programParametersListPopulator.populateProgramParametersList(javaParameters.getProgramParametersList(), pitConfigurationForm);
+
+
                 javaParameters.getProgramParametersList().add("--outputFormats");
-                javaParameters.getProgramParametersList().add("HTML,XML,CSV");
+                javaParameters.getProgramParametersList().add("XML");
+
                 return javaParameters;
             }
 
@@ -102,7 +120,7 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 final OSProcessHandler handler = super.startProcess();
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
-                        System.out.println("terminated");
+                        System.out.println("terminated");     // TODO: parse result and highlight lines
                     }
 
                     public void onTextAvailable(final ProcessEvent event, final Key outputType) {

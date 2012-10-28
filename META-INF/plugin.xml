@@ -1,16 +1,11 @@
 <idea-plugin version="2">
     <name>PIT mutation testing Idea plugin</name>
     <description><![CDATA[
-      Generates equals() and hashCode() using Guava library or Objects class from Java 7.
-      If project language level is set to 7.0 Objects class is used, otherwise Guava.
-      Usage:
-      <ul>
-          <li>ALT + INSERT -> equals() and hashCode() deluxe (inside Java Editor).</li>
-      </ul>
+        Description...
       ]]></description>
     <version>1.0</version>
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
-    <idea-version since-build="8000"/>
+    <idea-version since-build="111.69"/>
 
     <application-components>
     </application-components>
@@ -19,9 +14,16 @@
     </project-components>
 
     <actions>
+        <!--<action id="RunPitForClass" class="pl.mjedynak.idea.plugins.builder.action.GoToBuilderAction"-->
+                <!--text="Builder" description="Generates Builder">-->
+            <!--<add-to-group group-id="GoToCodeGroup" anchor="after" relative-to-action="GotoTest"/>-->
+            <!--<add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>-->
+            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>-->
+        <!--</action>-->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="pl.mjedynak.idea.plugins.pit.PitConfigurationType"/>
+        <configurationProducer implementation="pl.mjedynak.idea.plugins.pit.PitConfigurationProducer" order="last"/>
     </extensions>
 </idea-plugin>

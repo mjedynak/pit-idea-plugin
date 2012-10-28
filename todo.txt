@@ -1,5 +1,7 @@
 - Rerun bug - no module found
-- Right click menu - option to run mutation for single class
+- pit run configuration overrides all others
+
 - painter
 - option to clear painted lines
 - xml output parser
+- add field in form to allow other parameters

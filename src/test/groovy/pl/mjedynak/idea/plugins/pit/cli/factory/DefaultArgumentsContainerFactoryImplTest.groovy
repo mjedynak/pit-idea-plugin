@@ -1,15 +1,13 @@
 package pl.mjedynak.idea.plugins.pit.cli.factory
 
-import com.intellij.openapi.actionSystem.LangDataKeys
-import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiManager
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 import spock.lang.Specification
-import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiDirectory
 
 class DefaultArgumentsContainerFactoryImplTest extends Specification {
 
