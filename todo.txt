@@ -1,7 +1,6 @@
 - Rerun bug - no module found
-- pit run configuration overrides all others
 
+- add pit execution output in console
 - painter
 - option to clear painted lines
 - xml output parser
-- add field in form to allow other parameters

@@ -15,9 +15,12 @@ class ProgramParametersListPopulatorTest extends Specification {
         String reportDir = "reportDir"
         String targetClasses = "targetClasses"
         String sourceDir = "sourceDir"
+        String paramName = "paramName"
+        String paramValue = "paramValue"
         pitConfigurationForm.reportDir >> reportDir
         pitConfigurationForm.targetClasses >> targetClasses
         pitConfigurationForm.sourceDir >> sourceDir
+        pitConfigurationForm.otherParams >> paramName + " " + paramValue
 
         when:
         parametersListPopulator.populateProgramParametersList(programParametersList, pitConfigurationForm)
@@ -29,6 +32,8 @@ class ProgramParametersListPopulatorTest extends Specification {
         1 * programParametersList.add(sourceDir)
         1 * programParametersList.add(PitCommandLineArgument.TARGET_CLASSES.getName())
         1 * programParametersList.add(targetClasses);
+        1 * programParametersList.add(paramName)
+        1 * programParametersList.add(paramValue)
 
     }
 }

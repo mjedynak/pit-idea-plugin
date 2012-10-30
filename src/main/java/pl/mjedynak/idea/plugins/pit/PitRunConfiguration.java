@@ -97,8 +97,8 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 javaParameters.setMainClass(PIT_MAIN_CLASS);
                 programParametersListPopulator.populateProgramParametersList(javaParameters.getProgramParametersList(), pitConfigurationForm);
 
-                javaParameters.getProgramParametersList().add("--outputFormats");
-                javaParameters.getProgramParametersList().add("XML");
+//                javaParameters.getProgramParametersList().add("--outputFormats");
+//                javaParameters.getProgramParametersList().add("XML");
 
                 return javaParameters;
             }

@@ -19,6 +19,8 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration>{
     private JTextField sourceDirTextField;
     private JLabel reportDirLabel;
     private JTextField reportDirTextField;
+    private JTextField otherParamsTextField;
+    private JLabel otherParamsLabel;
 
 
     public String getReportDir() {
@@ -33,6 +35,10 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration>{
         return targetClassesTextField.getText();
     }
 
+    public String getOtherParams() {
+        return otherParamsTextField.getText();
+    }
+
     public void setReportDir(String reportDir) {
         reportDirTextField.setText(reportDir);
     }
@@ -43,6 +49,10 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration>{
 
     public void setTargetClasses(String targetClasses) {
         targetClassesTextField.setText(targetClasses);
+    }
+
+    public void setOtherParams(String otherParams) {
+       otherParamsTextField.setText(otherParams);
     }
 
     @Override

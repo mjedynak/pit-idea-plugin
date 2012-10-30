@@ -33,5 +33,6 @@ class PitConfigurationFormPopulatorTest extends Specification {
         1 * pitConfigurationForm.setReportDir(reportDir)
         1 * pitConfigurationForm.setSourceDir(sourceDir)
         1 * pitConfigurationForm.setTargetClasses(targetClasses)
+        1 * pitConfigurationForm.setOtherParams(pitConfigurationFormPopulator.OTHER_PARAMS)
     }
 }
