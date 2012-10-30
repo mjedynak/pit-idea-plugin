@@ -14,16 +14,9 @@
     </project-components>
 
     <actions>
-        <!--<action id="RunPitForClass" class="pl.mjedynak.idea.plugins.builder.action.GoToBuilderAction"-->
-                <!--text="Builder" description="Generates Builder">-->
-            <!--<add-to-group group-id="GoToCodeGroup" anchor="after" relative-to-action="GotoTest"/>-->
-            <!--<add-to-group group-id="EditorPopupMenu.GoTo" anchor="last"/>-->
-            <!--<keyboard-shortcut keymap="$default" first-keystroke="shift alt B"/>-->
-        <!--</action>-->
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="pl.mjedynak.idea.plugins.pit.PitConfigurationType"/>
-        <configurationProducer implementation="pl.mjedynak.idea.plugins.pit.PitConfigurationProducer" order="last"/>
     </extensions>
 </idea-plugin>

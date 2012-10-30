@@ -49,13 +49,6 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     private DefaultArgumentsContainerFactory defaultArgumentsContainerFactory;
     private PitConfigurationFormPopulator pitConfigurationFormPopulator;
     private ProgramParametersListPopulator programParametersListPopulator;
-    private PsiElement psiElement;
-
-    public void setPsiElement(PsiElement psiElement) {
-        this.psiElement = psiElement;
-
-
-    }
 
     public PitRunConfiguration(final String name, final Project project, ConfigurationFactory configurationFactory, PitConfigurationForm pitConfigurationForm,
                                DefaultArgumentsContainerFactory defaultArgumentsContainerFactory, PitConfigurationFormPopulator pitConfigurationFormPopulator,
@@ -97,17 +90,12 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
         JavaCommandLineState javaCommandLineState = new JavaCommandLineState(env) {
             @Override
             protected JavaParameters createJavaParameters() throws ExecutionException {
-                pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
                 JavaParameters javaParameters = new JavaParameters();
                 RunConfigurationModule runConfigurationModule = getConfigurationModule();
                 int classPathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS;
                 JavaParametersUtil.configureModule(runConfigurationModule, javaParameters, classPathType, null);
                 javaParameters.setMainClass(PIT_MAIN_CLASS);
-                if (psiElement != null) { // if element was set from producer
-                    pitConfigurationForm.setTargetClasses(((PsiJavaFileImpl) psiElement).getClasses()[0].getQualifiedName());
-                }
                 programParametersListPopulator.populateProgramParametersList(javaParameters.getProgramParametersList(), pitConfigurationForm);
-
 
                 javaParameters.getProgramParametersList().add("--outputFormats");
                 javaParameters.getProgramParametersList().add("XML");
