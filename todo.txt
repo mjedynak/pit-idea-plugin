@@ -1,6 +1,5 @@
-- Rerun bug - no module found
-
 - add pit execution output in console
+
 - painter
 - option to clear painted lines
 - xml output parser

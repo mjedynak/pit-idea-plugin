@@ -5,7 +5,6 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.JavaRunConfigurationExtensionManager;
 import com.intellij.execution.configurations.ConfigurationFactory;
-import com.intellij.execution.configurations.ConfigurationInfoProvider;
 import com.intellij.execution.configurations.JavaCommandLineState;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.JavaRunConfigurationModule;
@@ -13,24 +12,20 @@ import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
-import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.util.JavaParametersUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
-import com.intellij.psi.impl.source.PsiJavaFileImpl;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
@@ -62,44 +57,31 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        // TODO:
-        if (pitConfigurationForm.getReportDir().equals("")) { // if form wasn't used before
-            pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
-        }
+        populateFormIfNeeded();
         SettingsEditorGroup<PitRunConfiguration> group = new SettingsEditorGroup<PitRunConfiguration>();
         group.addEditor(ExecutionBundle.message("run.configuration.configuration.tab.title"), pitConfigurationForm);
         JavaRunConfigurationExtensionManager.getInstance().appendEditors(this, group);
         return group;
     }
 
-    @Override
-    public JDOMExternalizable createRunnerSettings(ConfigurationInfoProvider provider) {
-        System.out.println("createRunnerSettings " + provider);
-        return null;
-    }
-
-    @Override
-    public SettingsEditor<JDOMExternalizable> getRunnerSettingsEditor(ProgramRunner runner) {
-        System.out.println("getRunnerSettingsEditor " + runner);
-        return null;
-    }
 
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) throws ExecutionException {
-        System.out.println("getState " + executor + ", " + env);
         JavaCommandLineState javaCommandLineState = new JavaCommandLineState(env) {
             @Override
             protected JavaParameters createJavaParameters() throws ExecutionException {
                 JavaParameters javaParameters = new JavaParameters();
                 RunConfigurationModule runConfigurationModule = getConfigurationModule();
+                if (runConfigurationModule.getModule() == null) { // on IDEA fresh start, module can't be found in previously saved configuration
+                    Project project = runConfigurationModule.getProject();
+                    Module module = ModuleUtil.findModuleForFile(project.getProjectFile(), project);
+                    runConfigurationModule.setModule(module);
+                    populateFormIfNeeded();
+                }
                 int classPathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS;
                 JavaParametersUtil.configureModule(runConfigurationModule, javaParameters, classPathType, null);
                 javaParameters.setMainClass(PIT_MAIN_CLASS);
                 programParametersListPopulator.populateProgramParametersList(javaParameters.getProgramParametersList(), pitConfigurationForm);
-
-//                javaParameters.getProgramParametersList().add("--outputFormats");
-//                javaParameters.getProgramParametersList().add("XML");
-
                 return javaParameters;
             }
 
@@ -122,11 +104,6 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     }
 
     @Override
-    public void checkConfiguration() throws RuntimeConfigurationException {
-        System.out.println("checkConfiguration");
-    }
-
-    @Override
     public Collection<Module> getValidModules() {
         return Arrays.asList(ModuleManager.getInstance(getProject()).getModules());
     }
@@ -137,5 +114,15 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()));
         return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
                 defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
+    }
+
+    private void populateFormIfNeeded() {
+        if (formIsEmpty()) { // if form wasn't used before
+            pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
+        }
+    }
+
+    private boolean formIsEmpty() {
+        return pitConfigurationForm.getReportDir().equals("");
     }
 }
