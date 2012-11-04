@@ -1,5 +1,5 @@
 PIT Idea Plugin
-=========
+===============
 
 IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
 For now the integration between IDE and PIT is pretty basic. Plugin adds a 'Run configuration' that allows to execute PIT within IDE.
