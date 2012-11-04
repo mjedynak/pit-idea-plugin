@@ -1,5 +1,0 @@
-- add unit tests
-
-- painter
-- option to clear painted lines
-- xml output parser
