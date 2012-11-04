@@ -12,6 +12,7 @@ import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
+import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
@@ -24,7 +25,6 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
@@ -73,8 +73,7 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 JavaParameters javaParameters = new JavaParameters();
                 RunConfigurationModule runConfigurationModule = getConfigurationModule();
                 if (runConfigurationModule.getModule() == null) { // on IDEA fresh start, module can't be found in previously saved configuration
-                    Project project = runConfigurationModule.getProject();
-                    Module module = ModuleUtil.findModuleForFile(project.getProjectFile(), project);
+                    Module module = ModuleUtil.findModuleForFile(getProject().getProjectFile(), getProject());
                     runConfigurationModule.setModule(module);
                     populateFormIfNeeded();
                 }
@@ -90,16 +89,13 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 final OSProcessHandler handler = super.startProcess();
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
-                        System.out.println("terminated");     // TODO: parse result and highlight lines
-                    }
-
-                    public void onTextAvailable(final ProcessEvent event, final Key outputType) {
-                        System.out.println(event.getText());
+                        // TODO: parse result and highlight lines
                     }
                 });
                 return handler;
             }
         };
+        javaCommandLineState.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
         return javaCommandLineState;
     }
 

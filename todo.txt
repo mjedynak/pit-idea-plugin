@@ -1,5 +1,3 @@
-- add pit execution output in console
-
 - add unit tests
 
 - painter
