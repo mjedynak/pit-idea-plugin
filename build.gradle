@@ -2,7 +2,8 @@ apply plugin: 'groovy'
 // apply plugin: 'codenarc'
 apply plugin: 'idea'
 apply from: 'idea.gradle'
-// apply from: 'cobertura.gradle'
+apply plugin: 'cobertura'
+
 
 // --- properties ---
 ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 11.1'
@@ -10,11 +11,21 @@ ext.ideaJdk = 'IDEA IC-117.418'
 ext.sourceCompatibility = 1.6
 // --- properties ---
 
-// --- cobertura ---
-// cobertura.dependsOn test
-// check.dependsOn cobertura
-// --- cobertura ---
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.mapvine:gradle-cobertura-plugin:1.0'
+    }
+}
+
+
+cobertura {
+    format = 'html'
+    includes = ['**/*.java', '**/*.groovy']
+}
 
 repositories {
     mavenCentral()

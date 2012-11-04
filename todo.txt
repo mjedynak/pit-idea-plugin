@@ -1,5 +1,7 @@
 - add pit execution output in console
 
+- add unit tests
+
 - painter
 - option to clear painted lines
 - xml output parser
