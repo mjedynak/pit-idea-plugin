@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <name>PIT mutation testing Idea plugin</name>
     <description><![CDATA[
-        PIT mutation testing (http://pitest.org) plugin for IntelliJ IDEA.
+        IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
         <br/>
         Tested with PIT 0.28
         <br/><br/>
