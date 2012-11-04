@@ -22,7 +22,7 @@ import javax.swing.Icon;
 
 public class PitConfigurationType implements ConfigurationType {
 
-    public static final Icon ICON = IconLoader.getIcon("/runConfigurations/junit.png");
+    private static final Icon ICON = IconLoader.getIcon("/pit.gif");
     private final ConfigurationFactory myFactory;
 
     /**
