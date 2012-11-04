@@ -23,17 +23,18 @@ import javax.swing.Icon;
 public class PitConfigurationType implements ConfigurationType {
 
     private static final Icon ICON = IconLoader.getIcon("/pit.gif");
+    private static final String DISPLAY_NAME = "PIT Runner";
+    private static final String ID = "PIT";
+    private static final String CONFIGURATION_DESCRIPTION = "Executes PIT mutation testing";
+
     private final ConfigurationFactory myFactory;
 
-    /**
-     * reflection
-     */
     public PitConfigurationType() {
         myFactory = new ConfigurationFactoryEx(this) {
             public RunConfiguration createTemplateConfiguration(Project project) {
                 DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
                         = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(project), PsiManager.getInstance(project));
-                return new PitRunConfiguration("Pit Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
+                return new PitRunConfiguration("PIT Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
                         new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
             }
 
@@ -49,25 +50,30 @@ public class PitConfigurationType implements ConfigurationType {
         };
     }
 
+    @Override
     public String getDisplayName() {
-        return "Pit Runner";
+        return DISPLAY_NAME;
     }
 
+    @Override
     public String getConfigurationTypeDescription() {
-        return "Pit Runner description";
+        return CONFIGURATION_DESCRIPTION;
     }
 
+    @Override
     public Icon getIcon() {
         return ICON;
     }
 
+    @Override
     public ConfigurationFactory[] getConfigurationFactories() {
         return new ConfigurationFactory[]{myFactory};
     }
 
+    @Override
     @NotNull
     public String getId() {
-        return "Pit";
+        return ID;
     }
 
     @Nullable
