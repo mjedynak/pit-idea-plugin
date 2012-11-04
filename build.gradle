@@ -30,15 +30,13 @@ cobertura {
 repositories {
     mavenCentral()
 	mavenLocal()
-//    mavenRepo url: 'http://m2repo.spockframework.org/snapshots'
 }
 
 dependencies {
-    compile 'org.pitest:pitest:0.28'
+//    compile 'org.pitest:pitest:0.28'
 	compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
     testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
-//    testCompile 'org.objenesis:objenesis:1.2'
-    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.8.5'
+    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.8.8'
 }
 
 metaInf << files('/META-INF/plugin.xml')

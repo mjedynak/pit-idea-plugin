@@ -1,9 +1,17 @@
 <idea-plugin version="2">
     <name>PIT mutation testing Idea plugin</name>
     <description><![CDATA[
-        Description...
+        PIT mutation testing (http://pitest.org) plugin for IntelliJ IDEA.
+        <br/>
+        Tested with PIT 0.28
+        <br/><br/>
+        Adds a 'Run configuration' that allows to execute PIT within IDE.
+        <br/><br/>
+        <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
+        <br/><br/>
+        <b>Dependency to PIT must be added to the tested project: <i/>org.pitest:pitest:0.28</i></b>
       ]]></description>
-    <version>1.0</version>
+    <version>0.1</version>
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
     <idea-version since-build="117.418"/>
 
