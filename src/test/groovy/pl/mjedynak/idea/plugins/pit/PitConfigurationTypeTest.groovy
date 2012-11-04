@@ -34,4 +34,13 @@ class PitConfigurationTypeTest extends Specification {
         then:
         description == PitConfigurationType.CONFIGURATION_DESCRIPTION
     }
+
+    def "should return one configuration factory" () {
+        when:
+        def factories = pitConfigurationType.getConfigurationFactories()
+
+        then:
+        factories.length == 1
+        factories[0] == pitConfigurationType.myFactory
+    }
 }
