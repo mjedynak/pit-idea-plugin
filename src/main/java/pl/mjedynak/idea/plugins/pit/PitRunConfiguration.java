@@ -26,6 +26,7 @@ import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiManager;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
@@ -35,6 +36,8 @@ import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator
 
 import java.util.Arrays;
 import java.util.Collection;
+
+import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class PitRunConfiguration extends ModuleBasedConfiguration implements RunConfiguration {
 
@@ -113,12 +116,12 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     }
 
     private void populateFormIfNeeded() {
-        if (formIsEmpty()) { // if form wasn't used before
+        if (formIsEmpty()) {
             pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
         }
     }
 
     private boolean formIsEmpty() {
-        return pitConfigurationForm.getReportDir().equals("");
+        return isEmpty(pitConfigurationForm.getReportDir());
     }
 }

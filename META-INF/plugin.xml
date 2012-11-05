@@ -11,7 +11,7 @@
         <br/><br/>
         <b>Dependency to PIT must be added to the tested project: <i/>org.pitest:pitest:0.28</i></b>
       ]]></description>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
     <idea-version since-build="117.418"/>
 
