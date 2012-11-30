@@ -12,11 +12,14 @@ import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
+import com.intellij.execution.filters.TextConsoleBuilder;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.execution.util.JavaParametersUtil;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -109,7 +112,7 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     @Override
     protected ModuleBasedConfiguration createInstance() {
         DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
-                = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()));
+                = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()), new ProjectDeterminator());
         return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
                 defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
     }

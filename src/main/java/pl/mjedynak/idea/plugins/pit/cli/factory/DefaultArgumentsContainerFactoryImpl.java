@@ -5,21 +5,26 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
+import pl.mjedynak.idea.plugins.pit.ProjectDeterminator;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 
 public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsContainerFactory {
 
-    private static final String DEFAULT_REPORT_DIR = "report";
+    static final String DEFAULT_REPORT_DIR = "report";
+    static final String MAVEN_REPORT_DIR = "target/report";
 
     private ProjectRootManager projectRootManager;
 
     private PsiManager psiManager;
 
-    public DefaultArgumentsContainerFactoryImpl(ProjectRootManager projectRootManager, PsiManager psiManager) {
+    private ProjectDeterminator projectDeterminator;
+
+    public DefaultArgumentsContainerFactoryImpl(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminator projectDeterminator) {
         this.projectRootManager = projectRootManager;
         this.psiManager = psiManager;
+        this.projectDeterminator = projectDeterminator;
     }
 
     @Override
@@ -31,21 +36,24 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
         return container;
     }
 
+    private void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
+        VirtualFile baseDir = project.getBaseDir();
+        String reportDir;
+        if (baseDir != null) {
+            String suffix = DEFAULT_REPORT_DIR;
+            if (projectDeterminator.isMavenProject(project)) {
+                suffix = MAVEN_REPORT_DIR;
+            }
+            reportDir = baseDir.getPath() + "/" + suffix;
+            container.put(PitCommandLineArgument.REPORT_DIR, reportDir);
+        }
+    }
 
     private void addSourceDir(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
         if (isAtLeastOneSourceRoot(sourceRoots)) {
             String sourceRootPath = sourceRoots[0].getPath();
             container.put(PitCommandLineArgument.SOURCE_DIRS, sourceRootPath);
-        }
-    }
-
-    private void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
-        VirtualFile baseDir = project.getBaseDir();
-        String reportDir;
-        if (baseDir != null) {
-            reportDir = baseDir.getPath() + "/" + DEFAULT_REPORT_DIR;
-            container.put(PitCommandLineArgument.REPORT_DIR, reportDir);
         }
     }
 

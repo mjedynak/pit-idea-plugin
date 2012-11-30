@@ -9,16 +9,18 @@ import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 import spock.lang.Specification
 
+import pl.mjedynak.idea.plugins.pit.ProjectDeterminator
+
 class DefaultArgumentsContainerFactoryImplTest extends Specification {
 
     Project project = Mock()
     ProjectRootManager projectRootManager = Mock()
     PsiManager psiManager = Mock()
-    DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory = new DefaultArgumentsContainerFactoryImpl(projectRootManager, psiManager)
+    ProjectDeterminator projectDeterminator = Mock()
+    DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory = new DefaultArgumentsContainerFactoryImpl(projectRootManager, psiManager, projectDeterminator)
     
 
     def "should create container with default report dir"() {
-        String reportDir = "report"
         String baseDirPath = "app"
         VirtualFile baseDir = Mock()
         project.getBaseDir() >> baseDir
@@ -28,7 +30,21 @@ class DefaultArgumentsContainerFactoryImplTest extends Specification {
         PitCommandLineArgumentsContainer container = defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(project)
 
         then:
-        container.get(PitCommandLineArgument.REPORT_DIR) == baseDirPath + '/' + reportDir
+        container.get(PitCommandLineArgument.REPORT_DIR) == baseDirPath + '/' + DefaultArgumentsContainerFactoryImpl.DEFAULT_REPORT_DIR
+    }
+
+    def "should create container with maven default report dir for maven project"() {
+        String baseDirPath = "app"
+        VirtualFile baseDir = Mock()
+        project.getBaseDir() >> baseDir
+        baseDir.getPath() >> baseDirPath
+        projectDeterminator.isMavenProject(project) >> true
+
+        when:
+        PitCommandLineArgumentsContainer container = defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(project)
+
+        then:
+        container.get(PitCommandLineArgument.REPORT_DIR) == baseDirPath + '/' + DefaultArgumentsContainerFactoryImpl.MAVEN_REPORT_DIR
     }
 
     def "should create container with default source dir"() {
