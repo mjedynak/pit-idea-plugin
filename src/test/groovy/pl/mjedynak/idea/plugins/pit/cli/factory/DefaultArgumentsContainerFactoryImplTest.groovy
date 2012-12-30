@@ -9,14 +9,14 @@ import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
 import spock.lang.Specification
 
-import pl.mjedynak.idea.plugins.pit.ProjectDeterminator
+import pl.mjedynak.idea.plugins.pit.ProjectDeterminer
 
 class DefaultArgumentsContainerFactoryImplTest extends Specification {
 
     Project project = Mock()
     ProjectRootManager projectRootManager = Mock()
     PsiManager psiManager = Mock()
-    ProjectDeterminator projectDeterminator = Mock()
+    ProjectDeterminer projectDeterminator = Mock()
     DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory = new DefaultArgumentsContainerFactoryImpl(projectRootManager, psiManager, projectDeterminator)
     
 

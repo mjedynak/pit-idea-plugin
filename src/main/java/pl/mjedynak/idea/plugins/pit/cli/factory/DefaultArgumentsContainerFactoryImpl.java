@@ -5,10 +5,12 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import pl.mjedynak.idea.plugins.pit.ProjectDeterminator;
+import pl.mjedynak.idea.plugins.pit.ProjectDeterminer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
+
+import static org.apache.commons.lang.ArrayUtils.isEmpty;
 
 public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsContainerFactory {
 
@@ -19,12 +21,12 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
 
     private PsiManager psiManager;
 
-    private ProjectDeterminator projectDeterminator;
+    private ProjectDeterminer projectDeterminer;
 
-    public DefaultArgumentsContainerFactoryImpl(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminator projectDeterminator) {
+    public DefaultArgumentsContainerFactoryImpl(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminer projectDeterminator) {
         this.projectRootManager = projectRootManager;
         this.psiManager = psiManager;
-        this.projectDeterminator = projectDeterminator;
+        this.projectDeterminer = projectDeterminator;
     }
 
     @Override
@@ -41,7 +43,7 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
         String reportDir;
         if (baseDir != null) {
             String suffix = DEFAULT_REPORT_DIR;
-            if (projectDeterminator.isMavenProject(project)) {
+            if (projectDeterminer.isMavenProject(project)) {
                 suffix = MAVEN_REPORT_DIR;
             }
             reportDir = baseDir.getPath() + "/" + suffix;
@@ -51,7 +53,7 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
 
     private void addSourceDir(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
-        if (isAtLeastOneSourceRoot(sourceRoots)) {
+        if (hasAtLeastOneSourceRoot(sourceRoots)) {
             String sourceRootPath = sourceRoots[0].getPath();
             container.put(PitCommandLineArgument.SOURCE_DIRS, sourceRootPath);
         }
@@ -59,7 +61,7 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
 
     private void addTargetClasses(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
-        if (isAtLeastOneSourceRoot(sourceRoots)) {
+        if (hasAtLeastOneSourceRoot(sourceRoots)) {
             PsiDirectory directory = psiManager.findDirectory(sourceRoots[0]);
             addTargetClassesIfDirectoryExists(container, directory);
         }
@@ -68,17 +70,17 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
     private void addTargetClassesIfDirectoryExists(PitCommandLineArgumentsContainer container, PsiDirectory directory) {
         if (directory != null) {
             PsiDirectory[] subdirectories = directory.getSubdirectories();
-            if (isAtLeastOneSubdirectory(subdirectories)) {
+            if (hasAtLeastOneSubdirectory(subdirectories)) {
                 container.put(PitCommandLineArgument.TARGET_CLASSES, subdirectories[0].getName() + ".*");
             }
         }
     }
 
-    private boolean isAtLeastOneSourceRoot(VirtualFile[] sourceRoots) {
-        return sourceRoots != null && sourceRoots.length > 0;
+    private boolean hasAtLeastOneSourceRoot(VirtualFile[] sourceRoots) {
+        return !isEmpty(sourceRoots);
     }
 
-    private boolean isAtLeastOneSubdirectory(PsiDirectory[] subdirectories) {
-        return subdirectories != null && subdirectories.length > 0;
+    private boolean hasAtLeastOneSubdirectory(PsiDirectory[] subdirectories) {
+        return !isEmpty(subdirectories);
     }
 }

@@ -33,7 +33,7 @@ public class PitConfigurationType implements ConfigurationType {
         myFactory = new ConfigurationFactoryEx(this) {
             public RunConfiguration createTemplateConfiguration(Project project) {
                 DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
-                        = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(project), PsiManager.getInstance(project), new ProjectDeterminator());
+                        = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(project), PsiManager.getInstance(project), new ProjectDeterminer());
                 return new PitRunConfiguration("PIT Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
                         new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
             }
