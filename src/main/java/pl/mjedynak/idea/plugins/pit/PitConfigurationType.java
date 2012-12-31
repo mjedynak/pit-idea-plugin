@@ -38,6 +38,7 @@ public class PitConfigurationType implements ConfigurationType {
                         ProjectRootManager.getInstance(project), PsiManager.getInstance(project), new ProjectDeterminer(), new MavenPomReader());
                 DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
                         = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
+                // TODO: duplication
                 return new PitRunConfiguration("PIT Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
                         new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
             }

@@ -113,6 +113,7 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()), new ProjectDeterminer(), new MavenPomReader());
         DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
                 = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
+        // TODO: duplication
         return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
                 defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
     }
