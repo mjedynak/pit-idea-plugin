@@ -1,12 +1,11 @@
 package pl.mjedynak.idea.plugins.pit.gui.populator
 
-import spock.lang.Specification
-import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory
-
 import com.intellij.openapi.project.Project
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
+import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
+import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm
+import spock.lang.Specification
 
 class PitConfigurationFormPopulatorTest extends Specification {
 

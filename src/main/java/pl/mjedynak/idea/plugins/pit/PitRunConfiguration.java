@@ -28,10 +28,11 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactoryImpl;
+import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
 import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
+import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -108,8 +109,10 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     @Override
     protected ModuleBasedConfiguration createInstance() {
-        DefaultArgumentsContainerFactoryImpl defaultArgumentsContainerFactory
-                = new DefaultArgumentsContainerFactoryImpl(ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()), new ProjectDeterminer());
+        DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(
+                ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()), new ProjectDeterminer(), new MavenPomReader());
+        DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
+                = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
         return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
                 defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
     }

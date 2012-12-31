@@ -6,7 +6,7 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class ProjectDeterminerTest extends Specification {
 
-    ProjectDeterminer projectDeterminator = new ProjectDeterminer()
+    ProjectDeterminer projectDeterminer = new ProjectDeterminer()
     Project project = Mock()
     VirtualFile baseDir = Mock()
 
@@ -16,7 +16,7 @@ class ProjectDeterminerTest extends Specification {
         baseDir.findChild(ProjectDeterminer.POM_FILE) >> pomFile
 
         when:
-        def result = projectDeterminator.isMavenProject(project)
+        def result = projectDeterminer.isMavenProject(project)
 
         then:
         result == true
@@ -26,7 +26,7 @@ class ProjectDeterminerTest extends Specification {
         project.baseDir >> baseDir
 
         when:
-        def result = projectDeterminator.isMavenProject(project)
+        def result = projectDeterminer.isMavenProject(project)
 
         then:
         result == false
@@ -34,7 +34,7 @@ class ProjectDeterminerTest extends Specification {
 
     def "should determine that project is not mavenized if base dir not found"() {
         when:
-        def result = projectDeterminator.isMavenProject(project)
+        def result = projectDeterminer.isMavenProject(project)
 
         then:
         result == false

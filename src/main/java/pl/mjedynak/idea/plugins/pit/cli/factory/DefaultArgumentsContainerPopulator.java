@@ -9,36 +9,32 @@ import pl.mjedynak.idea.plugins.pit.ProjectDeterminer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
+import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
+
+import java.io.IOException;
 
 import static org.apache.commons.lang.ArrayUtils.isEmpty;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 
-public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsContainerFactory {
+public class DefaultArgumentsContainerPopulator {
 
     static final String DEFAULT_REPORT_DIR = "report";
     static final String MAVEN_REPORT_DIR = "target/report";
+    static final String ALL_CLASSES_SUFFIX = ".*";
 
     private ProjectRootManager projectRootManager;
-
     private PsiManager psiManager;
-
     private ProjectDeterminer projectDeterminer;
+    private MavenPomReader mavenPomReader;
 
-    public DefaultArgumentsContainerFactoryImpl(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminer projectDeterminator) {
+    public DefaultArgumentsContainerPopulator(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminer projectDeterminer, MavenPomReader mavenPomReader) {
         this.projectRootManager = projectRootManager;
         this.psiManager = psiManager;
-        this.projectDeterminer = projectDeterminator;
+        this.projectDeterminer = projectDeterminer;
+        this.mavenPomReader = mavenPomReader;
     }
 
-    @Override
-    public PitCommandLineArgumentsContainer createDefaultPitCommandLineArgumentsContainer(Project project) {
-        PitCommandLineArgumentsContainer container = new PitCommandLineArgumentsContainerImpl();
-        addReportDir(project, container);
-        addSourceDir(container);
-        addTargetClasses(container);
-        return container;
-    }
-
-    private void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
+    public void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
         VirtualFile baseDir = project.getBaseDir();
         String reportDir;
         if (baseDir != null) {
@@ -51,7 +47,7 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
         }
     }
 
-    private void addSourceDir(PitCommandLineArgumentsContainer container) {
+    public void addSourceDir(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
         if (hasAtLeastOneSourceRoot(sourceRoots)) {
             String sourceRootPath = sourceRoots[0].getPath();
@@ -59,7 +55,26 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
         }
     }
 
-    private void addTargetClasses(PitCommandLineArgumentsContainer container) {
+    public void addTargetClasses(Project project, PitCommandLineArgumentsContainer container) {
+        if (projectDeterminer.isMavenProject(project)) {
+            addTargetClassesForMavenProject(project, container);
+        } else {
+            addTargetClassesForNonMavenProject(container);
+        }
+    }
+
+    private void addTargetClassesForMavenProject(Project project, PitCommandLineArgumentsContainer container) {
+        VirtualFile baseDir = project.getBaseDir();
+        VirtualFile pomVirtualFile = baseDir.findChild(ProjectDeterminer.POM_FILE);
+        try {
+            String groupId = mavenPomReader.getGroupId(pomVirtualFile.getInputStream());
+            container.put(TARGET_CLASSES, groupId + ALL_CLASSES_SUFFIX);
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private void addTargetClassesForNonMavenProject(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
         if (hasAtLeastOneSourceRoot(sourceRoots)) {
             PsiDirectory directory = psiManager.findDirectory(sourceRoots[0]);
@@ -71,7 +86,7 @@ public class DefaultArgumentsContainerFactoryImpl implements DefaultArgumentsCon
         if (directory != null) {
             PsiDirectory[] subdirectories = directory.getSubdirectories();
             if (hasAtLeastOneSubdirectory(subdirectories)) {
-                container.put(PitCommandLineArgument.TARGET_CLASSES, subdirectories[0].getName() + ".*");
+                container.put(TARGET_CLASSES, subdirectories[0].getName() + ALL_CLASSES_SUFFIX);
             }
         }
     }

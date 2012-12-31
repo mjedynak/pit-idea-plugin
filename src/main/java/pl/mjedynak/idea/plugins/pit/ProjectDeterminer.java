@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ProjectDeterminer {
 
-    static final String POM_FILE = "pom.xml";
+    public static final String POM_FILE = "pom.xml";
 
     public boolean isMavenProject(@NotNull Project project) {
         boolean result = false;
