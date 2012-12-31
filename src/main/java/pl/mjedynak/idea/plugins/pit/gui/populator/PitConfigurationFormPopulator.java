@@ -6,6 +6,10 @@ import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
+
 public class PitConfigurationFormPopulator {
 
     static final String OTHER_PARAMS = "--outputFormats XML,HTML";
@@ -20,17 +24,17 @@ public class PitConfigurationFormPopulator {
     }
 
     private void setTargetClasses(PitConfigurationForm pitConfigurationForm, PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer) {
-        String targetClasses = pitCommandLineArgumentsContainer.get(PitCommandLineArgument.TARGET_CLASSES);
+        String targetClasses = pitCommandLineArgumentsContainer.get(TARGET_CLASSES);
         pitConfigurationForm.setTargetClasses(targetClasses);
     }
 
     private void setSourceDir(PitConfigurationForm pitConfigurationForm, PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer) {
-        String sourceDir = pitCommandLineArgumentsContainer.get(PitCommandLineArgument.SOURCE_DIRS);
+        String sourceDir = pitCommandLineArgumentsContainer.get(SOURCE_DIRS);
         pitConfigurationForm.setSourceDir(sourceDir);
     }
 
     private void setReportDir(PitConfigurationForm pitConfigurationForm, PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer) {
-        String reportDir = pitCommandLineArgumentsContainer.get(PitCommandLineArgument.REPORT_DIR);
+        String reportDir = pitCommandLineArgumentsContainer.get(REPORT_DIR);
         pitConfigurationForm.setReportDir(reportDir);
     }
 

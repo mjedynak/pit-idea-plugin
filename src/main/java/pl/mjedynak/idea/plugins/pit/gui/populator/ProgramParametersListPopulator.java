@@ -4,6 +4,10 @@ import com.intellij.execution.configurations.ParametersList;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
+
 public class ProgramParametersListPopulator {
 
     public void populateProgramParametersList(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
@@ -15,17 +19,17 @@ public class ProgramParametersListPopulator {
     }
 
     private void addReportDir(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
-        programParametersList.add(PitCommandLineArgument.REPORT_DIR.getName());
+        programParametersList.add(REPORT_DIR.getName());
         programParametersList.add(pitConfigurationForm.getReportDir());
     }
 
     private void addSourceDir(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
-        programParametersList.add(PitCommandLineArgument.SOURCE_DIRS.getName());
+        programParametersList.add(SOURCE_DIRS.getName());
         programParametersList.add(pitConfigurationForm.getSourceDir());
     }
 
     private void addTargetClasses(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
-        programParametersList.add(PitCommandLineArgument.TARGET_CLASSES.getName());
+        programParametersList.add(TARGET_CLASSES.getName());
         programParametersList.add(pitConfigurationForm.getTargetClasses());
     }
 
