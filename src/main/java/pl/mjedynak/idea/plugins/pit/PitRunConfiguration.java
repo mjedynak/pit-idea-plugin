@@ -30,16 +30,12 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator;
 import pl.mjedynak.idea.plugins.pit.console.DirectoryReader;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
 import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
-import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
 
 import java.io.File;
 import java.util.Arrays;
@@ -55,15 +51,17 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     private DefaultArgumentsContainerFactory defaultArgumentsContainerFactory;
     private PitConfigurationFormPopulator pitConfigurationFormPopulator;
     private ProgramParametersListPopulator programParametersListPopulator;
+    private DirectoryReader directoryReader;
 
-    public PitRunConfiguration(final String name, final Project project, ConfigurationFactory configurationFactory, PitConfigurationForm pitConfigurationForm,
+    public PitRunConfiguration(String name, Project project, ConfigurationFactory configurationFactory, PitConfigurationForm pitConfigurationForm,
                                DefaultArgumentsContainerFactory defaultArgumentsContainerFactory, PitConfigurationFormPopulator pitConfigurationFormPopulator,
-                               ProgramParametersListPopulator programParametersListPopulator) {
+                               ProgramParametersListPopulator programParametersListPopulator, DirectoryReader directoryReader) {
         super(name, new JavaRunConfigurationModule(project, false), configurationFactory);
         this.pitConfigurationForm = pitConfigurationForm;
         this.defaultArgumentsContainerFactory = defaultArgumentsContainerFactory;
         this.pitConfigurationFormPopulator = pitConfigurationFormPopulator;
         this.programParametersListPopulator = programParametersListPopulator;
+        this.directoryReader = directoryReader;
     }
 
     @Override
@@ -104,7 +102,7 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
                         // TODO: parse result and highlight lines
-                        File reportDirectory = new DirectoryReader().getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
+                        File reportDirectory = directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
                         String reportLink = "file:///" + reportDirectory.getAbsolutePath() + "/index.html";
                         consoleView.printHyperlink("Open report in browser", new OpenUrlHyperlinkInfo(reportLink));
                     }
@@ -135,13 +133,8 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     @Override
     protected ModuleBasedConfiguration createInstance() {
-        DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(
-                ProjectRootManager.getInstance(getProject()), PsiManager.getInstance(getProject()), new ProjectDeterminer(), new MavenPomReader());
-        DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
-                = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
-        // TODO: duplication
-        return new PitRunConfiguration("Pit Run Configuration", getProject(), PitConfigurationType.getInstance().getConfigurationFactories()[0], new PitConfigurationForm(),
-                defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
+        PitRunConfigurationFactory pitRunConfigurationFactory = new PitRunConfigurationFactory();
+        return pitRunConfigurationFactory.createConfiguration(getProject());
     }
 
     private void populateFormIfNeeded() {

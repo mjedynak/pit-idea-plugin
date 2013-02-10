@@ -5,9 +5,8 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
-import pl.mjedynak.idea.plugins.pit.ProjectDeterminer;
+import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
-import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
 

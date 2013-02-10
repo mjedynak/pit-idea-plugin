@@ -10,9 +10,9 @@ import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import spock.lang.Specification
 
-import pl.mjedynak.idea.plugins.pit.ProjectDeterminer
+import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer
 
-import static pl.mjedynak.idea.plugins.pit.ProjectDeterminer.POM_FILE
+import static ProjectDeterminer.POM_FILE
 import static DefaultArgumentsContainerPopulator.ALL_CLASSES_SUFFIX
 import static DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR
 import static DefaultArgumentsContainerPopulator.MAVEN_REPORT_DIR

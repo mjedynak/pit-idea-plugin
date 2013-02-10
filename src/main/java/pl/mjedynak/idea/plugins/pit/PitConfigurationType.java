@@ -19,6 +19,7 @@ import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
 import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
+import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer;
 
 import javax.swing.Icon;
 
@@ -34,13 +35,8 @@ public class PitConfigurationType implements ConfigurationType {
     public PitConfigurationType() {
         myFactory = new ConfigurationFactoryEx(this) {
             public RunConfiguration createTemplateConfiguration(Project project) {
-                DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(
-                        ProjectRootManager.getInstance(project), PsiManager.getInstance(project), new ProjectDeterminer(), new MavenPomReader());
-                DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
-                        = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
-                // TODO: duplication
-                return new PitRunConfiguration("PIT Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
-                        new PitConfigurationForm(), defaultArgumentsContainerFactory, new PitConfigurationFormPopulator(), new ProgramParametersListPopulator());
+                PitRunConfigurationFactory pitRunConfigurationFactory = new PitRunConfigurationFactory();
+                return pitRunConfigurationFactory.createConfiguration(project);
             }
 
             @Override
