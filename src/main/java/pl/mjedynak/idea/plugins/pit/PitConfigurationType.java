@@ -7,19 +7,10 @@ import com.intellij.execution.configurations.ModuleBasedConfiguration;
 import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.IconLoader;
-import com.intellij.psi.PsiManager;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator;
-import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
-import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
-import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
-import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
-import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer;
 
 import javax.swing.Icon;
 

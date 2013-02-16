@@ -1,6 +1,6 @@
 package pl.mjedynak.idea.plugins.pit.maven
 
-import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer
+
 import spock.lang.Specification
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile

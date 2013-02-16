@@ -8,9 +8,9 @@ import com.intellij.psi.PsiManager
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
+import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer
 import spock.lang.Specification
 
-import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer
 
 import static ProjectDeterminer.POM_FILE
 import static DefaultArgumentsContainerPopulator.ALL_CLASSES_SUFFIX
