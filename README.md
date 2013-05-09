@@ -1,3 +1,4 @@
+
 PIT Idea Plugin
 ===============
 
@@ -6,7 +7,7 @@ For now the integration between IDE and PIT is pretty basic. Plugin adds a 'Run 
 In further plans there is an integration between mutation testing results and source code in IDE.
 
 JUnit / TestNG tests are supported.
-Dependency to PIT must be added to the tested project, e.g.: org.pitest:pitest:0.29
+Dependency to PIT must be added to the tested project, e.g.: org.pitest:pitest:0.30
 
 
 Build Requirements

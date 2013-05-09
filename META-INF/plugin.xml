@@ -3,7 +3,7 @@
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
         <br/>
-        Tested with PIT 0.29
+        Tested with PIT 0.30
         <br/><br/>
         Adds a 'Run configuration' that allows to execute PIT within IDE.
         <br/><br/>
@@ -11,9 +11,14 @@
         <br/><br/>
         <b>Dependency to PIT must be added to the tested project: <i/>org.pitest:pitest:0.29</i></b>
       ]]></description>
-    <version>1.2.0</version>
+    <version>1.2.1</version>
     <change-notes>
         <![CDATA[
+           version 1.2.1
+           <br/>
+           <ul>
+           <li>Small improvements, tested against PIT 0.30</li>
+           </ul>
            version 1.2.0
            <br/>
            <ul>
@@ -29,7 +34,7 @@
     </change-notes>
 
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
-    <idea-version since-build="117.418"/>
+    <idea-version since-build="129.354"/>
 
     <application-components>
     </application-components>

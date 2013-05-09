@@ -1,5 +1,8 @@
 package pl.mjedynak.idea.plugins.pit.console
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class DirectoryReader {
 
     File getLatestDirectoryFrom(File parentDir) {

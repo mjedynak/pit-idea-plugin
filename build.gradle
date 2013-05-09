@@ -6,8 +6,8 @@ apply plugin: 'cobertura'
 
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 12.0'
-ext.ideaJdk = 'IDEA IC-117.418'
+ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 12.1'
+ext.ideaJdk = 'IDEA IC-129.354'
 ext.sourceCompatibility = 1.6
 // --- properties ---
 
@@ -17,7 +17,7 @@ sourceSets.main.groovy.srcDir 'src/main/java'
 
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.4'
+    gradleVersion = '1.6'
 }
 
 buildscript {
@@ -43,9 +43,9 @@ repositories {
 dependencies {
 //    compile 'org.pitest:pitest:0.28'
 	compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
-    testCompile 'org.spockframework:spock-core:0.7-groovy-1.8'
+    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.6'
+    testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.objenesis:objenesis:1.2'
-    groovy group: 'org.codehaus.groovy', name: 'groovy-all', version: '1.8.8'
 }
 
 metaInf << files('/META-INF/plugin.xml')
