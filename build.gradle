@@ -16,10 +16,6 @@ sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDir 'src/main/java'
 
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '1.6'
-}
-
 buildscript {
     repositories {
         mavenCentral()
