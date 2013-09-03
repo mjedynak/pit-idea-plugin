@@ -1,5 +1,6 @@
 package pl.mjedynak.idea.plugins.pit;
 
+import com.google.common.base.Optional;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionBundle;
 import com.intellij.execution.ExecutionException;
@@ -102,9 +103,11 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
                         // TODO: parse result and highlight lines
-                        File reportDirectory = directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
-                        String reportLink = "file:///" + reportDirectory.getAbsolutePath() + "/index.html";
-                        consoleView.printHyperlink("Open report in browser", new OpenUrlHyperlinkInfo(reportLink));
+                        Optional<File> reportDirectory = directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
+                        if (reportDirectory.isPresent()) {
+                            String reportLink = "file:///" + reportDirectory.get().getAbsolutePath() + "/index.html";
+                            consoleView.printHyperlink("Open report in browser", new OpenUrlHyperlinkInfo(reportLink));
+                        }
                     }
                 });
                 return handler;

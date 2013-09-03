@@ -13,6 +13,7 @@ import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer;
 import java.io.IOException;
 
 import static org.apache.commons.lang.ArrayUtils.isEmpty;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 
 public class DefaultArgumentsContainerPopulator {
@@ -50,7 +51,7 @@ public class DefaultArgumentsContainerPopulator {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
         if (hasAtLeastOneSourceRoot(sourceRoots)) {
             String sourceRootPath = sourceRoots[0].getPath();
-            container.put(PitCommandLineArgument.SOURCE_DIRS, sourceRootPath);
+            container.put(SOURCE_DIRS, sourceRootPath);
         }
     }
 
