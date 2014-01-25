@@ -1,9 +1,6 @@
 package pl.mjedynak.idea.plugins.pit.gui.populator;
 
-import com.intellij.openapi.project.Project;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
-import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
-import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
@@ -12,11 +9,9 @@ import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARG
 
 public class PitConfigurationFormPopulator {
 
-    static final String OTHER_PARAMS = "--outputFormats XML,HTML";
+    public static final String OTHER_PARAMS = "--outputFormats XML,HTML";
 
-    public void populateTextFieldsInForm(PitConfigurationForm pitConfigurationForm,
-                                         DefaultArgumentsContainerFactory defaultArgumentsContainerFactory, Project project) {
-        PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer = defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(project);
+    public void populateTextFieldsInForm(PitConfigurationForm pitConfigurationForm, PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer) {
         setReportDir(pitConfigurationForm, pitCommandLineArgumentsContainer);
         setSourceDir(pitConfigurationForm, pitCommandLineArgumentsContainer);
         setTargetClasses(pitConfigurationForm, pitCommandLineArgumentsContainer);

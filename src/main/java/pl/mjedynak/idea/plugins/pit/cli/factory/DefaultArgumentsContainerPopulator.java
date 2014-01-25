@@ -7,10 +7,9 @@ import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiManager;
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
+import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer;
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
-import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer;
-
-import java.io.IOException;
+import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer;
 
 import static org.apache.commons.lang.ArrayUtils.isEmpty;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
@@ -20,18 +19,18 @@ public class DefaultArgumentsContainerPopulator {
 
     static final String DEFAULT_REPORT_DIR = "report";
     static final String MAVEN_REPORT_DIR = "target/report";
+    static final String GRADLE_REPORT_DIR = "build/reports/pit";
     static final String ALL_CLASSES_SUFFIX = ".*";
 
     private ProjectRootManager projectRootManager;
     private PsiManager psiManager;
-    private ProjectDeterminer projectDeterminer;
-    private MavenPomReader mavenPomReader;
+    private MavenProjectDeterminer mavenProjectDeterminer = new MavenProjectDeterminer();
+    private GradleProjectDeterminer gradleProjectDeterminer = new GradleProjectDeterminer();
+    private MavenPomReader mavenPomReader = new MavenPomReader();
 
-    public DefaultArgumentsContainerPopulator(ProjectRootManager projectRootManager, PsiManager psiManager, ProjectDeterminer projectDeterminer, MavenPomReader mavenPomReader) {
+    public DefaultArgumentsContainerPopulator(ProjectRootManager projectRootManager, PsiManager psiManager) {
         this.projectRootManager = projectRootManager;
         this.psiManager = psiManager;
-        this.projectDeterminer = projectDeterminer;
-        this.mavenPomReader = mavenPomReader;
     }
 
     public void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
@@ -39,8 +38,10 @@ public class DefaultArgumentsContainerPopulator {
         String reportDir;
         if (baseDir != null) {
             String suffix = DEFAULT_REPORT_DIR;
-            if (projectDeterminer.isMavenProject(project)) {
+            if (mavenProjectDeterminer.isMavenProject(project)) {
                 suffix = MAVEN_REPORT_DIR;
+            } else if (gradleProjectDeterminer.isGradleProject(project)) {
+                suffix = GRADLE_REPORT_DIR;
             }
             reportDir = baseDir.getPath() + "/" + suffix;
             container.put(PitCommandLineArgument.REPORT_DIR, reportDir);
@@ -56,7 +57,7 @@ public class DefaultArgumentsContainerPopulator {
     }
 
     public void addTargetClasses(Project project, PitCommandLineArgumentsContainer container) {
-        if (projectDeterminer.isMavenProject(project)) {
+        if (mavenProjectDeterminer.isMavenProject(project)) {
             addTargetClassesForMavenProject(project, container);
         } else {
             addTargetClassesForNonMavenProject(container);
@@ -65,11 +66,11 @@ public class DefaultArgumentsContainerPopulator {
 
     private void addTargetClassesForMavenProject(Project project, PitCommandLineArgumentsContainer container) {
         VirtualFile baseDir = project.getBaseDir();
-        VirtualFile pomVirtualFile = baseDir.findChild(ProjectDeterminer.POM_FILE);
+        VirtualFile pomVirtualFile = baseDir.findChild(MavenProjectDeterminer.POM_FILE);
         try {
             String groupId = mavenPomReader.getGroupId(pomVirtualFile.getInputStream());
             container.put(TARGET_CLASSES, groupId + ALL_CLASSES_SUFFIX);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IllegalStateException(e);
         }
     }

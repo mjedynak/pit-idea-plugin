@@ -1,20 +1,19 @@
 package pl.mjedynak.idea.plugins.pit.maven
 
-
 import spock.lang.Specification
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
-class ProjectDeterminerTest extends Specification {
+class MavenProjectDeterminerTest extends Specification {
 
-    ProjectDeterminer projectDeterminer = new ProjectDeterminer()
+    MavenProjectDeterminer projectDeterminer = new MavenProjectDeterminer()
     Project project = Mock()
     VirtualFile baseDir = Mock()
 
     def "should determine that project is mavenized if it has pom.xml"() {
         project.baseDir >> baseDir
         VirtualFile pomFile = Mock()
-        baseDir.findChild(ProjectDeterminer.POM_FILE) >> pomFile
+        baseDir.findChild(MavenProjectDeterminer.POM_FILE) >> pomFile
 
         when:
         def result = projectDeterminer.isMavenProject(project)

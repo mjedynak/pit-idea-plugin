@@ -1,4 +1,4 @@
-package pl.mjedynak.idea.plugins.pit;
+package pl.mjedynak.idea.plugins.pit.configuration;
 
 import com.google.common.base.Optional;
 import com.intellij.execution.DefaultExecutionResult;
@@ -23,7 +23,6 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.execution.util.JavaParametersUtil;
 import com.intellij.ide.browsers.OpenUrlHyperlinkInfo;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -31,38 +30,40 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.WriteExternalException;
+import org.jdom.Attribute;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
+import pl.mjedynak.idea.plugins.pit.JavaParametersCreator;
+import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory;
 import pl.mjedynak.idea.plugins.pit.console.DirectoryReader;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
-import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 
 public class PitRunConfiguration extends ModuleBasedConfiguration implements RunConfiguration {
 
-    private static final String PIT_MAIN_CLASS = "org.pitest.mutationtest.MutationCoverageReport";
-
-    private PitConfigurationForm pitConfigurationForm;
+    private PitConfigurationForm pitConfigurationForm = new PitConfigurationForm();
+    private PitConfigurationFormPopulator pitConfigurationFormPopulator = new PitConfigurationFormPopulator();
+    private DirectoryReader directoryReader = new DirectoryReader();
+    private JavaParametersCreator javaParametersCreator = new JavaParametersCreator();
     private DefaultArgumentsContainerFactory defaultArgumentsContainerFactory;
-    private PitConfigurationFormPopulator pitConfigurationFormPopulator;
-    private ProgramParametersListPopulator programParametersListPopulator;
-    private DirectoryReader directoryReader;
+    private PitRunConfigurationStorer pitRunConfigurationStorer = new PitRunConfigurationStorer();
 
-    public PitRunConfiguration(String name, Project project, ConfigurationFactory configurationFactory, PitConfigurationForm pitConfigurationForm,
-                               DefaultArgumentsContainerFactory defaultArgumentsContainerFactory, PitConfigurationFormPopulator pitConfigurationFormPopulator,
-                               ProgramParametersListPopulator programParametersListPopulator, DirectoryReader directoryReader) {
+    public PitRunConfiguration(String name, Project project, ConfigurationFactory configurationFactory,
+                               DefaultArgumentsContainerFactory defaultArgumentsContainerFactory) {
         super(name, new JavaRunConfigurationModule(project, false), configurationFactory);
-        this.pitConfigurationForm = pitConfigurationForm;
         this.defaultArgumentsContainerFactory = defaultArgumentsContainerFactory;
-        this.pitConfigurationFormPopulator = pitConfigurationFormPopulator;
-        this.programParametersListPopulator = programParametersListPopulator;
-        this.directoryReader = directoryReader;
     }
 
     @Override
@@ -82,24 +83,19 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
             @Override
             protected JavaParameters createJavaParameters() throws ExecutionException {
-                JavaParameters javaParameters = new JavaParameters();
                 RunConfigurationModule runConfigurationModule = getConfigurationModule();
                 if (runConfigurationModule.getModule() == null) { // on IDEA fresh start, module can't be found in previously saved configuration
                     Module module = ModuleUtil.findModuleForFile(getProject().getProjectFile(), getProject());
                     runConfigurationModule.setModule(module);
                     populateFormIfNeeded();
                 }
-                int classPathType = JavaParameters.JDK_AND_CLASSES_AND_TESTS;
-                JavaParametersUtil.configureModule(runConfigurationModule, javaParameters, classPathType, null);
-                javaParameters.setMainClass(PIT_MAIN_CLASS);
-                programParametersListPopulator.populateProgramParametersList(javaParameters.getProgramParametersList(), pitConfigurationForm);
-                return javaParameters;
+                return javaParametersCreator.createJavaParameters(runConfigurationModule, pitConfigurationForm);
             }
 
             @NotNull
             @Override
             protected OSProcessHandler startProcess() throws ExecutionException {
-                final OSProcessHandler handler = super.startProcess();
+                OSProcessHandler handler = super.startProcess();
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
                         // TODO: parse result and highlight lines
@@ -116,8 +112,8 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
             @NotNull
             @Override
             public ExecutionResult execute(@NotNull final Executor executor, @NotNull final ProgramRunner runner) throws ExecutionException {
-                final ProcessHandler processHandler = startProcess();
-                final ConsoleView console = createConsole(executor);
+                ProcessHandler processHandler = startProcess();
+                ConsoleView console = createConsole(executor);
                 if (console != null) {
                     console.attachToProcess(processHandler);
                 }
@@ -142,11 +138,24 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     private void populateFormIfNeeded() {
         if (formIsEmpty()) {
-            pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, defaultArgumentsContainerFactory, getProject());
+            PitCommandLineArgumentsContainer container = defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(getProject());
+            pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, container);
         }
     }
 
     private boolean formIsEmpty() {
         return isEmpty(pitConfigurationForm.getReportDir());
+    }
+
+    @Override
+    public void readExternal(final Element element) throws InvalidDataException {
+        super.readExternal(element);
+        pitRunConfigurationStorer.readExternal(pitConfigurationForm, element);
+    }
+
+    @Override
+    public void writeExternal(final Element element) throws WriteExternalException {
+        pitRunConfigurationStorer.writeExternal(pitConfigurationForm, element);
+        super.writeExternal(element);
     }
 }

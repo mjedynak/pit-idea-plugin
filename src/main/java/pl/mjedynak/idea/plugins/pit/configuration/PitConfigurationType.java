@@ -1,4 +1,4 @@
-package pl.mjedynak.idea.plugins.pit;
+package pl.mjedynak.idea.plugins.pit.configuration;
 
 import com.intellij.execution.configuration.ConfigurationFactoryEx;
 import com.intellij.execution.configurations.ConfigurationFactory;

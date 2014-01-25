@@ -5,7 +5,7 @@ import groovy.transform.CompileStatic
 import org.jetbrains.annotations.NotNull
 
 @CompileStatic
-class ProjectDeterminer {
+class MavenProjectDeterminer {
     public static final String POM_FILE = "pom.xml";
 
     boolean isMavenProject(@NotNull Project project) {

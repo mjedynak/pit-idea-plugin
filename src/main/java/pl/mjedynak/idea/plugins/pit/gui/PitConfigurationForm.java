@@ -6,7 +6,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.jetbrains.annotations.NotNull;
-import pl.mjedynak.idea.plugins.pit.PitRunConfiguration;
+import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;

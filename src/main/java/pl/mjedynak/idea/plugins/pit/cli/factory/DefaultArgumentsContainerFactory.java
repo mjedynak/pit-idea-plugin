@@ -6,7 +6,6 @@ import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl;
 
 public class DefaultArgumentsContainerFactory {
 
-
     private DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator;
 
     public DefaultArgumentsContainerFactory(DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator) {

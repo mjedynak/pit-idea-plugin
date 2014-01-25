@@ -6,9 +6,9 @@ apply plugin: 'cobertura'
 
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 12.1'
-ext.ideaJdk = 'IDEA IC-129.354'
-ext.sourceCompatibility = 1.6
+ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 13.0'
+ext.ideaJdk = 'IDEA IC-133.193'
+sourceCompatibility = 1.6
 // --- properties ---
 
 // workaround for http://issues.gradle.org/browse/GRADLE-2538
@@ -25,7 +25,6 @@ buildscript {
     }
 }
 
-
 cobertura {
     format = 'html'
     includes = ['**/*.java', '**/*.groovy']
@@ -36,8 +35,28 @@ repositories {
 	mavenLocal()
 }
 
+configurations {
+    releaseJars
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.releaseJars
+}
+
+build {
+    dependsOn copyToLib
+}
+
 dependencies {
-//    compile 'org.pitest:pitest:0.28'
+
+    releaseJars('org.pitest:pitest-command-line:0.32') {
+        transitive = false
+    }
+    releaseJars('org.pitest:pitest:0.32') {
+        transitive = false
+    }
+
 	compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.6'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'

@@ -7,15 +7,17 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
 import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl
+import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
-import pl.mjedynak.idea.plugins.pit.maven.ProjectDeterminer
+import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
 import spock.lang.Specification
 
 
-import static ProjectDeterminer.POM_FILE
+import static MavenProjectDeterminer.POM_FILE
 import static DefaultArgumentsContainerPopulator.ALL_CLASSES_SUFFIX
 import static DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR
 import static DefaultArgumentsContainerPopulator.MAVEN_REPORT_DIR
+import static pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator.GRADLE_REPORT_DIR
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES
@@ -25,10 +27,17 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
     Project project = Mock()
     ProjectRootManager projectRootManager = Mock()
     PsiManager psiManager = Mock()
-    ProjectDeterminer projectDeterminer = Mock()
+    MavenProjectDeterminer mavenProjectDeterminer = Mock()
+    GradleProjectDeterminer gradleProjectDeterminer = Mock()
     MavenPomReader mavenPomReader = Mock()
-    DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(projectRootManager, psiManager, projectDeterminer, mavenPomReader)
+    DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(projectRootManager, psiManager)
     PitCommandLineArgumentsContainer container = new PitCommandLineArgumentsContainerImpl()
+
+    def setup() {
+        defaultArgumentsContainerPopulator.mavenProjectDeterminer = mavenProjectDeterminer
+        defaultArgumentsContainerPopulator.mavenPomReader = mavenPomReader
+        defaultArgumentsContainerPopulator.gradleProjectDeterminer = gradleProjectDeterminer
+    }
 
     def "should create container with default report dir"() {
         String baseDirPath = "app"
@@ -48,13 +57,27 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         VirtualFile baseDir = Mock()
         project.getBaseDir() >> baseDir
         baseDir.getPath() >> baseDirPath
-        projectDeterminer.isMavenProject(project) >> true
+        mavenProjectDeterminer.isMavenProject(project) >> true
 
         when:
         defaultArgumentsContainerPopulator.addReportDir(project, container)
 
         then:
         container.get(REPORT_DIR) == baseDirPath + '/' + MAVEN_REPORT_DIR
+    }
+
+    def "should create container with gradle default report dir for gradle project"() {
+        String baseDirPath = "app"
+        VirtualFile baseDir = Mock()
+        project.getBaseDir() >> baseDir
+        baseDir.getPath() >> baseDirPath
+        gradleProjectDeterminer.isGradleProject(project) >> true
+
+        when:
+        defaultArgumentsContainerPopulator.addReportDir(project, container)
+
+        then:
+        container.get(REPORT_DIR) == baseDirPath + '/' + GRADLE_REPORT_DIR
     }
 
     def "should create container with default source dir"() {
@@ -100,7 +123,7 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         project.baseDir >> baseDir
         baseDir.findChild(POM_FILE) >> pomVirtualFile
         pomVirtualFile.inputStream >> pomFile
-        projectDeterminer.isMavenProject(project) >> true
+        mavenProjectDeterminer.isMavenProject(project) >> true
         mavenPomReader.getGroupId(pomFile) >> groupId
 
         when:

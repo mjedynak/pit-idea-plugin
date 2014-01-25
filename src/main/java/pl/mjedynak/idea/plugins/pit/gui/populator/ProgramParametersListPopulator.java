@@ -1,7 +1,6 @@
 package pl.mjedynak.idea.plugins.pit.gui.populator;
 
 import com.intellij.execution.configurations.ParametersList;
-import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
@@ -15,7 +14,6 @@ public class ProgramParametersListPopulator {
         addSourceDir(programParametersList, pitConfigurationForm);
         addTargetClasses(programParametersList, pitConfigurationForm);
         addOtherParams(programParametersList, pitConfigurationForm);
-
     }
 
     private void addReportDir(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
