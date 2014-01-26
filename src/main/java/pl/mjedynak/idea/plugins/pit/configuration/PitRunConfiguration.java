@@ -32,7 +32,6 @@ import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
-import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.JavaParametersCreator;
@@ -47,9 +46,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static org.apache.commons.lang.StringUtils.isEmpty;
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 
 public class PitRunConfiguration extends ModuleBasedConfiguration implements RunConfiguration {
 
@@ -144,7 +140,8 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     }
 
     private boolean formIsEmpty() {
-        return isEmpty(pitConfigurationForm.getReportDir());
+        return isEmpty(pitConfigurationForm.getReportDir()) && isEmpty(pitConfigurationForm.getSourceDir())
+                && isEmpty(pitConfigurationForm.getTargetClasses()) && isEmpty(pitConfigurationForm.getOtherParams());
     }
 
     @Override
