@@ -13,7 +13,8 @@ class ClassPathPopulatorTest extends Specification {
     private final static String PLUGINS_PATH = "path"
 
     def "should populate classpath"() {
-        PathManager.metaClass.static.getPluginsPath = { PLUGINS_PATH }
+        GroovyMock(PathManager, global: true)
+        PathManager.getPluginsPath() >> PLUGINS_PATH
 
         when:
         classPathPopulator.populateClassPathWithPitJar(classPath)
