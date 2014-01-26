@@ -39,25 +39,23 @@ configurations {
     releaseJars
 }
 
-task copyToLib(type: Copy) {
-    into "$buildDir/libs"
-    from configurations.releaseJars
-}
-
-build {
-    dependsOn copyToLib
+task dist(type: Zip) {
+    from(jar.outputs.files) {
+        into('pit-idea-plugin/lib')
+    }
+    from(configurations.releaseJars) {
+        into('pit-idea-plugin/lib')
+    }
+    archiveName 'pit-idea-plugin.zip'
+    dependsOn build
 }
 
 dependencies {
 
-    releaseJars('org.pitest:pitest-command-line:0.32') {
-        transitive = false
-    }
-    releaseJars('org.pitest:pitest:0.32') {
-        transitive = false
-    }
+    releaseJars('org.pitest:pitest-command-line:0.32') { transitive = false }
+    releaseJars('org.pitest:pitest:0.32') { transitive = false }
 
-	compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
+    compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.6'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.objenesis:objenesis:1.2'
