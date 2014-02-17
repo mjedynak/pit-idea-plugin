@@ -84,7 +84,7 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         VirtualFile sourceRoot = Mock()
         VirtualFile[] sourceRoots = [sourceRoot]
         projectRootManager.getContentSourceRoots() >> sourceRoots
-        String path = "src/main/java"
+        String path = "somePath"
         sourceRoot.getPath() >> path
 
         when:
@@ -92,6 +92,23 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
 
         then:
         container.get(SOURCE_DIRS) == path
+    }
+
+    def "should prefer java as source dir"() {
+        VirtualFile firstSourceRoot = Mock()
+        VirtualFile secondSourceRoot = Mock()
+        VirtualFile[] sourceRoots = [firstSourceRoot, secondSourceRoot]
+        projectRootManager.getContentSourceRoots() >> sourceRoots
+        String firstPath = "src/main/resources"
+        String secondPath = "src/main/java"
+        firstSourceRoot.getPath() >> firstPath
+        secondSourceRoot.getPath() >> secondPath
+
+        when:
+        defaultArgumentsContainerPopulator.addSourceDir(container)
+
+        then:
+        container.get(SOURCE_DIRS) == secondPath
     }
 
     def "should create container with default target classes"() {

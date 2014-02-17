@@ -56,7 +56,7 @@ dependencies {
     releaseJars('org.pitest:pitest:0.32') { transitive = false }
 
     compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.6'
+    compile 'org.codehaus.groovy:groovy-all:2.0.6'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.objenesis:objenesis:1.2'
 }

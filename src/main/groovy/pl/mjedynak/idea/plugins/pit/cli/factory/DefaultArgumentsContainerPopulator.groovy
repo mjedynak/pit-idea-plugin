@@ -1,21 +1,23 @@
-package pl.mjedynak.idea.plugins.pit.cli.factory;
+package pl.mjedynak.idea.plugins.pit.cli.factory
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiManager;
-import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer;
-import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
-import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer;
-import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader;
-import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer;
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiDirectory
+import com.intellij.psi.PsiManager
+import groovy.transform.CompileStatic
+import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainer
+import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument
+import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
+import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
+import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
 
-import static org.apache.commons.lang.ArrayUtils.isEmpty;
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
+import static org.apache.commons.lang.ArrayUtils.isEmpty
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES
 
-public class DefaultArgumentsContainerPopulator {
+@CompileStatic
+class DefaultArgumentsContainerPopulator {
 
     static final String DEFAULT_REPORT_DIR = "report";
     static final String MAVEN_REPORT_DIR = "target/report";
@@ -28,12 +30,12 @@ public class DefaultArgumentsContainerPopulator {
     private GradleProjectDeterminer gradleProjectDeterminer = new GradleProjectDeterminer();
     private MavenPomReader mavenPomReader = new MavenPomReader();
 
-    public DefaultArgumentsContainerPopulator(ProjectRootManager projectRootManager, PsiManager psiManager) {
+    DefaultArgumentsContainerPopulator(ProjectRootManager projectRootManager, PsiManager psiManager) {
         this.projectRootManager = projectRootManager;
         this.psiManager = psiManager;
     }
 
-    public void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
+    void addReportDir(Project project, PitCommandLineArgumentsContainer container) {
         VirtualFile baseDir = project.getBaseDir();
         String reportDir;
         if (baseDir != null) {
@@ -48,15 +50,20 @@ public class DefaultArgumentsContainerPopulator {
         }
     }
 
-    public void addSourceDir(PitCommandLineArgumentsContainer container) {
+    void addSourceDir(PitCommandLineArgumentsContainer container) {
         VirtualFile[] sourceRoots = projectRootManager.getContentSourceRoots();
-        if (hasAtLeastOneSourceRoot(sourceRoots)) {
+        VirtualFile javaSrcFolder = sourceRoots.find { VirtualFile sourceRoot ->
+            sourceRoot.getPath().contains("java")
+        }
+        if (javaSrcFolder != null) {
+            container.put(SOURCE_DIRS, javaSrcFolder.getPath());
+        } else if (hasAtLeastOneSourceRoot(sourceRoots)) {
             String sourceRootPath = sourceRoots[0].getPath();
             container.put(SOURCE_DIRS, sourceRootPath);
         }
     }
 
-    public void addTargetClasses(Project project, PitCommandLineArgumentsContainer container) {
+    void addTargetClasses(Project project, PitCommandLineArgumentsContainer container) {
         if (mavenProjectDeterminer.isMavenProject(project)) {
             addTargetClassesForMavenProject(project, container);
         } else {
@@ -83,7 +90,8 @@ public class DefaultArgumentsContainerPopulator {
         }
     }
 
-    private void addTargetClassesIfDirectoryExists(PitCommandLineArgumentsContainer container, PsiDirectory directory) {
+    private
+    static void addTargetClassesIfDirectoryExists(PitCommandLineArgumentsContainer container, PsiDirectory directory) {
         if (directory != null) {
             PsiDirectory[] subdirectories = directory.getSubdirectories();
             if (hasAtLeastOneSubdirectory(subdirectories)) {
@@ -92,11 +100,11 @@ public class DefaultArgumentsContainerPopulator {
         }
     }
 
-    private boolean hasAtLeastOneSourceRoot(VirtualFile[] sourceRoots) {
+    private static boolean hasAtLeastOneSourceRoot(VirtualFile[] sourceRoots) {
         return !isEmpty(sourceRoots);
     }
 
-    private boolean hasAtLeastOneSubdirectory(PsiDirectory[] subdirectories) {
+    private static boolean hasAtLeastOneSubdirectory(PsiDirectory[] subdirectories) {
         return !isEmpty(subdirectories);
     }
 }

@@ -5,7 +5,6 @@ PIT Idea Plugin
 IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
 
 JUnit / TestNG tests are supported.
-Dependency to PIT must be added to the tested project, e.g.: org.pitest:pitest:0.30
 
 
 Build Requirements
