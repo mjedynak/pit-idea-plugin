@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
-// apply plugin: 'codenarc'
+apply plugin: 'codenarc'
+apply plugin: "jacoco"
 apply plugin: 'idea'
 apply from: 'idea.gradle'
-apply plugin: 'cobertura'
 
 
 // --- properties ---
@@ -16,19 +16,11 @@ sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDir 'src/main/java'
 
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.mapvine:gradle-cobertura-plugin:1.0'
-    }
+jacocoTestReport {
+    additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
 }
 
-cobertura {
-    format = 'html'
-    includes = ['**/*.java', '**/*.groovy']
-}
+build.dependsOn jacocoTestReport
 
 repositories {
     mavenCentral()

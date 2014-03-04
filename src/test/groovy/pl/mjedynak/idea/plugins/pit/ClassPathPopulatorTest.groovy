@@ -10,11 +10,11 @@ class ClassPathPopulatorTest extends Specification {
 
     ClassPathPopulator classPathPopulator = new ClassPathPopulator()
     PathsList classPath = Mock()
-    private final static String PLUGINS_PATH = "path"
+    private final static String PLUGINS_PATH = 'path'
 
     def "should populate classpath"() {
         GroovyMock(PathManager, global: true)
-        PathManager.getPluginsPath() >> PLUGINS_PATH
+        PathManager.pluginsPath >> PLUGINS_PATH
 
         when:
         classPathPopulator.populateClassPathWithPitJar(classPath)

@@ -15,7 +15,7 @@ class DirectoryReaderTest extends Specification {
         newerDir.deleteOnExit()
 
         when:
-        Optional<File> result = directoryReader.getLatestDirectoryFrom(new File(System.getProperty("java.io.tmpdir")))
+        Optional<File> result = directoryReader.getLatestDirectoryFrom(new File(System.getProperty('java.io.tmpdir')))
 
         then:
         result.get() == newerDir

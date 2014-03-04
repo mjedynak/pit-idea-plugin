@@ -12,26 +12,26 @@ class ProgramParametersListPopulatorTest extends Specification {
     def "should populate program parameter list with pit configuration form content"() {
         ParametersList programParametersList = Mock()
         PitConfigurationForm pitConfigurationForm = Mock()
-        String reportDir = "reportDir"
-        String targetClasses = "targetClasses"
-        String sourceDir = "sourceDir"
-        String paramName = "paramName"
-        String paramValue = "paramValue"
+        String reportDir = 'reportDir'
+        String targetClasses = 'targetClasses'
+        String sourceDir = 'sourceDir'
+        String paramName = 'paramName'
+        String paramValue = 'paramValue'
         pitConfigurationForm.reportDir >> reportDir
         pitConfigurationForm.targetClasses >> targetClasses
         pitConfigurationForm.sourceDir >> sourceDir
-        pitConfigurationForm.otherParams >> paramName + " " + paramValue
+        pitConfigurationForm.otherParams >> paramName + ' ' + paramValue
 
         when:
         parametersListPopulator.populateProgramParametersList(programParametersList, pitConfigurationForm)
 
         then:
-        1 * programParametersList.add(PitCommandLineArgument.REPORT_DIR.getName())
-        1 * programParametersList.add(reportDir);
-        1 * programParametersList.add(PitCommandLineArgument.SOURCE_DIRS.getName())
+        1 * programParametersList.add(PitCommandLineArgument.REPORT_DIR.name)
+        1 * programParametersList.add(reportDir)
+        1 * programParametersList.add(PitCommandLineArgument.SOURCE_DIRS.name)
         1 * programParametersList.add(sourceDir)
-        1 * programParametersList.add(PitCommandLineArgument.TARGET_CLASSES.getName())
-        1 * programParametersList.add(targetClasses);
+        1 * programParametersList.add(PitCommandLineArgument.TARGET_CLASSES.name)
+        1 * programParametersList.add(targetClasses)
         1 * programParametersList.add(paramName)
         1 * programParametersList.add(paramValue)
 

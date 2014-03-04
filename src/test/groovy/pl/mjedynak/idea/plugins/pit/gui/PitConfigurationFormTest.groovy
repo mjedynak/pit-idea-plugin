@@ -7,7 +7,7 @@ class PitConfigurationFormTest extends Specification {
 
     PitConfigurationForm pitConfigurationForm = new PitConfigurationForm()
     JTextField textFieldMock = Mock()
-    String text = "someText"
+    String text = 'someText'
 
     def setup() {
         textFieldMock.text >> text
@@ -17,7 +17,7 @@ class PitConfigurationFormTest extends Specification {
         pitConfigurationForm.reportDirTextField = textFieldMock
 
         when:
-        String result = pitConfigurationForm.getReportDir()
+        String result = pitConfigurationForm.reportDir
 
         then:
         result == text
@@ -27,7 +27,7 @@ class PitConfigurationFormTest extends Specification {
         pitConfigurationForm.sourceDirTextField = textFieldMock
 
         when:
-        String result = pitConfigurationForm.getSourceDir()
+        String result = pitConfigurationForm.sourceDir
 
         then:
         result == text
@@ -37,7 +37,7 @@ class PitConfigurationFormTest extends Specification {
         pitConfigurationForm.targetClassesTextField = textFieldMock
 
         when:
-        String result = pitConfigurationForm.getTargetClasses()
+        String result = pitConfigurationForm.targetClasses
 
         then:
         result == text
@@ -47,7 +47,7 @@ class PitConfigurationFormTest extends Specification {
         pitConfigurationForm.otherParamsTextField = textFieldMock
 
         when:
-        String result = pitConfigurationForm.getOtherParams()
+        String result = pitConfigurationForm.otherParams
 
         then:
         result == text

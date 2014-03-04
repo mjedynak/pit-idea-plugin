@@ -12,14 +12,14 @@ import pl.mjedynak.idea.plugins.pit.gui.populator.ProgramParametersListPopulator
 @CompileStatic
 class JavaParametersCreator {
 
-    private static final String PIT_MAIN_CLASS = "org.pitest.mutationtest.commandline.MutationCoverageReport"
+    private static final String PIT_MAIN_CLASS = 'org.pitest.mutationtest.commandline.MutationCoverageReport'
 
     ProgramParametersListPopulator programParametersListPopulator = new ProgramParametersListPopulator()
     ClassPathPopulator classPathPopulator = new ClassPathPopulator()
 
     JavaParameters createJavaParameters(RunConfigurationModule runConfigurationModule, PitConfigurationForm pitConfigurationForm) {
         JavaParameters javaParameters = new JavaParameters()
-        ModuleManager moduleManager = ModuleManager.getInstance(runConfigurationModule.project);
+        ModuleManager moduleManager = ModuleManager.getInstance(runConfigurationModule.project)
         configureModules(moduleManager, javaParameters)
         javaParameters.setMainClass(PIT_MAIN_CLASS)
         programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm)

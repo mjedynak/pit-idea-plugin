@@ -11,9 +11,9 @@ class PitConfigurationFormPopulatorTest extends Specification {
 
     PitConfigurationForm pitConfigurationForm = Mock()
     PitCommandLineArgumentsContainer pitCommandLineArgumentsContainer = Mock()
-    String reportDir = "reportDir"
-    String sourceDir = "srcDir"
-    String targetClasses = "targetClasses"
+    String reportDir = 'reportDir'
+    String sourceDir = 'srcDir'
+    String targetClasses = 'targetClasses'
 
     def "should populate form text fields using argument container created by factory"() {
         pitCommandLineArgumentsContainer.get(PitCommandLineArgument.REPORT_DIR) >> reportDir

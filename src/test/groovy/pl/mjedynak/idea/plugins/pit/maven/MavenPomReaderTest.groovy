@@ -7,7 +7,7 @@ class MavenPomReaderTest extends Specification {
     MavenPomReader mavenPomReader = new MavenPomReader()
 
     def "should read group id from maven pom file"() {
-        String groupId = "group"
+        String groupId = 'group'
         String pomFileText = """<project>
                                 <groupId>$groupId</groupId>
                                 <artifactId>artifact</artifactId>

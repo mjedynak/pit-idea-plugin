@@ -19,23 +19,23 @@ class PitRunConfigurationStorerTest extends Specification {
     Attribute targetClassesAttribute = Mock()
     Attribute otherParamsAttribute = Mock()
 
-    String reportDir = "reportDir"
-    String sourceDir = "sourceDir"
-    String targetClasses = "targetClasses"
-    String otherParams = "params"
+    String reportDir = 'reportDir'
+    String sourceDir = 'sourceDir'
+    String targetClasses = 'targetClasses'
+    String otherParams = 'params'
 
     def "should populate configuration form with attributes"() {
         element.getAttribute(REPORT_DIR.toString()) >> reportDirAttribute
-        reportDirAttribute.getValue() >> reportDir
+        reportDirAttribute.value >> reportDir
 
         element.getAttribute(SOURCE_DIRS.toString()) >> sourceDirAttribute
-        sourceDirAttribute.getValue() >> sourceDir
+        sourceDirAttribute.value >> sourceDir
 
         element.getAttribute(TARGET_CLASSES.toString()) >> targetClassesAttribute
-        targetClassesAttribute.getValue() >> targetClasses
+        targetClassesAttribute.value >> targetClasses
 
         element.getAttribute(OTHER_PARAMS) >> otherParamsAttribute
-        otherParamsAttribute.getValue() >> otherParams
+        otherParamsAttribute.value >> otherParams
 
         when:
         pitRunConfigurationStorer.readExternal(pitConfigurationForm, element)
@@ -59,10 +59,10 @@ class PitRunConfigurationStorerTest extends Specification {
     }
 
     def "should set attributes from configuration form"() {
-        pitConfigurationForm.getReportDir() >> reportDir
-        pitConfigurationForm.getSourceDir() >> sourceDir
-        pitConfigurationForm.getTargetClasses() >> targetClasses
-        pitConfigurationForm.getOtherParams() >> otherParams
+        pitConfigurationForm.reportDir >> reportDir
+        pitConfigurationForm.sourceDir >> sourceDir
+        pitConfigurationForm.targetClasses >> targetClasses
+        pitConfigurationForm.otherParams >> otherParams
 
         when:
         pitRunConfigurationStorer.writeExternal(pitConfigurationForm, element)

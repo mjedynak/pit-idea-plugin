@@ -40,10 +40,10 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
     }
 
     def "should create container with default report dir"() {
-        String baseDirPath = "app"
+        String baseDirPath = 'app'
         VirtualFile baseDir = Mock()
-        project.getBaseDir() >> baseDir
-        baseDir.getPath() >> baseDirPath
+        project.baseDir >> baseDir
+        baseDir.path >> baseDirPath
 
         when:
         defaultArgumentsContainerPopulator.addReportDir(project, container)
@@ -53,10 +53,10 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
     }
 
     def "should create container with maven default report dir for maven project"() {
-        String baseDirPath = "app"
+        String baseDirPath = 'app'
         VirtualFile baseDir = Mock()
-        project.getBaseDir() >> baseDir
-        baseDir.getPath() >> baseDirPath
+        project.baseDir >> baseDir
+        baseDir.path >> baseDirPath
         mavenProjectDeterminer.isMavenProject(project) >> true
 
         when:
@@ -67,10 +67,10 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
     }
 
     def "should create container with gradle default report dir for gradle project"() {
-        String baseDirPath = "app"
+        String baseDirPath = 'app'
         VirtualFile baseDir = Mock()
-        project.getBaseDir() >> baseDir
-        baseDir.getPath() >> baseDirPath
+        project.baseDir >> baseDir
+        baseDir.path >> baseDirPath
         gradleProjectDeterminer.isGradleProject(project) >> true
 
         when:
@@ -83,9 +83,9 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
     def "should create container with default source dir"() {
         VirtualFile sourceRoot = Mock()
         VirtualFile[] sourceRoots = [sourceRoot]
-        projectRootManager.getContentSourceRoots() >> sourceRoots
-        String path = "somePath"
-        sourceRoot.getPath() >> path
+        projectRootManager.contentSourceRoots >> sourceRoots
+        String path = 'somePath'
+        sourceRoot.path >> path
 
         when:
         defaultArgumentsContainerPopulator.addSourceDir(container)
@@ -98,11 +98,11 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         VirtualFile firstSourceRoot = Mock()
         VirtualFile secondSourceRoot = Mock()
         VirtualFile[] sourceRoots = [firstSourceRoot, secondSourceRoot]
-        projectRootManager.getContentSourceRoots() >> sourceRoots
-        String firstPath = "src/main/resources"
-        String secondPath = "src/main/java"
-        firstSourceRoot.getPath() >> firstPath
-        secondSourceRoot.getPath() >> secondPath
+        projectRootManager.contentSourceRoots >> sourceRoots
+        String firstPath = 'src/main/resources'
+        String secondPath = 'src/main/java'
+        firstSourceRoot.path >> firstPath
+        secondSourceRoot.path >> secondPath
 
         when:
         defaultArgumentsContainerPopulator.addSourceDir(container)
@@ -115,14 +115,14 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         VirtualFile sourceRoot = Mock()
         PsiDirectory directory = Mock()
         PsiDirectory subdirectory = Mock()
-        String packageName = "com"
+        String packageName = 'com'
         VirtualFile[] sourceRoots = [sourceRoot]
         PsiDirectory[] subdirectories = [subdirectory]
-        projectRootManager.getContentSourceRoots() >> sourceRoots
-        sourceRoot.getPath() >> "anyPath"
+        projectRootManager.contentSourceRoots >> sourceRoots
+        sourceRoot.path >> 'anyPath'
         psiManager.findDirectory(sourceRoot) >> directory
-        directory.getSubdirectories() >> subdirectories
-        subdirectory.getName() >> packageName
+        directory.subdirectories >> subdirectories
+        subdirectory.name >> packageName
 
         when:
         defaultArgumentsContainerPopulator.addTargetClasses(project, container)
@@ -135,7 +135,7 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         VirtualFile baseDir = Mock()
         VirtualFile pomVirtualFile = Mock()
         InputStream pomFile = Mock()
-        String groupId = "pl.mjedynak"
+        String groupId = 'pl.mjedynak'
 
         project.baseDir >> baseDir
         baseDir.findChild(POM_FILE) >> pomVirtualFile
@@ -148,7 +148,6 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
 
         then:
         container.get(TARGET_CLASSES) == groupId + ALL_CLASSES_SUFFIX
-
     }
 
 }
