@@ -5,8 +5,9 @@ import com.intellij.util.PathsList
 
 class ClassPathPopulator {
 
-    static final String PITEST_JAR = 'pitest-0.32.jar'
-    static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-0.32.jar'
+    static final String PITEST_VERSION = '1.0.0'
+    static final String PITEST_JAR = 'pitest-' + PITEST_VERSION + '.jar'
+    static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-' + PITEST_VERSION + '.jar'
     static final String SEPARATOR = System.getProperty('file.separator')
     static final String PLUGIN_NAME = 'pit-idea-plugin'
     static final String LIB_DIR = 'lib'

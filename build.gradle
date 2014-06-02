@@ -6,8 +6,8 @@ apply from: 'idea.gradle'
 
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 13.0'
-ext.ideaJdk = 'IDEA IC-133.193'
+ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 13.1'
+ext.ideaJdk = 'IDEA IC-135.475'
 sourceCompatibility = 1.6
 // --- properties ---
 
@@ -15,6 +15,9 @@ sourceCompatibility = 1.6
 sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDir 'src/main/java'
 
+jacoco {
+    toolVersion = "0.7.0.201403182114"
+}
 
 jacocoTestReport {
     additionalSourceDirs = files(sourceSets.main.allJava.srcDirs)
@@ -44,11 +47,11 @@ task dist(type: Zip) {
 
 dependencies {
 
-    releaseJars('org.pitest:pitest-command-line:0.32') { transitive = false }
-    releaseJars('org.pitest:pitest:0.32') { transitive = false }
+    releaseJars('org.pitest:pitest-command-line:1.0.0') { transitive = false }
+    releaseJars('org.pitest:pitest:1.0.0') { transitive = false }
 
     compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
-    compile 'org.codehaus.groovy:groovy-all:2.0.6'
+    compile 'org.codehaus.groovy:groovy-all:2.2.1'
     testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
     testCompile 'org.objenesis:objenesis:1.2'
 }
