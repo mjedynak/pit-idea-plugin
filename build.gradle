@@ -4,10 +4,10 @@ apply plugin: "jacoco"
 apply plugin: 'idea'
 apply from: 'idea.gradle'
 
-
 // --- properties ---
 ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 13.1'
 ext.ideaJdk = 'IDEA IC-135.475'
+ext.pitVersion = '1.0.0'
 sourceCompatibility = 1.6
 // --- properties ---
 
@@ -27,7 +27,7 @@ build.dependsOn jacocoTestReport
 
 repositories {
     mavenCentral()
-	mavenLocal()
+    mavenLocal()
 }
 
 configurations {
@@ -47,8 +47,8 @@ task dist(type: Zip) {
 
 dependencies {
 
-    releaseJars('org.pitest:pitest-command-line:1.0.0') { transitive = false }
-    releaseJars('org.pitest:pitest:1.0.0') { transitive = false }
+    releaseJars("org.pitest:pitest-command-line:$pitVersion") { transitive = false }
+    releaseJars("org.pitest:pitest:$pitVersion") { transitive = false }
 
     compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
     compile 'org.codehaus.groovy:groovy-all:2.2.1'

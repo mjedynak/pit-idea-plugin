@@ -23,4 +23,14 @@ class ClassPathPopulatorTest extends Specification {
         1 * classPath.add(PLUGINS_PATH + SEPARATOR + PLUGIN_NAME + SEPARATOR + LIB_DIR + SEPARATOR + PITEST_JAR)
         1 * classPath.add(PLUGINS_PATH + SEPARATOR + PLUGIN_NAME + SEPARATOR + LIB_DIR + SEPARATOR + PITEST_COMMAND_LINE_JAR)
     }
+
+    def "should have the same PIT version as specified in build.gradle"() {
+        when:
+        File gradleBuildFile = new File('build.gradle')
+        String lineWithVersion = gradleBuildFile.filterLine { String line -> line.startsWith('ext.pitVersion') }
+        String version = lineWithVersion[lineWithVersion.indexOf("'") + 1 .. lineWithVersion.lastIndexOf("'") - 1]
+
+        then:
+        version == PITEST_VERSION
+    }
 }
