@@ -5,7 +5,9 @@ import org.jdom.Element
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm
 import spock.lang.Specification
 
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.*
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES
 import static pl.mjedynak.idea.plugins.pit.configuration.PitRunConfigurationStorer.OTHER_PARAMS
 
 class PitRunConfigurationStorerTest extends Specification {

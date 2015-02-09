@@ -12,11 +12,10 @@ import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
 import spock.lang.Specification
 
-
-import static MavenProjectDeterminer.POM_FILE
 import static DefaultArgumentsContainerPopulator.ALL_CLASSES_SUFFIX
 import static DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR
 import static DefaultArgumentsContainerPopulator.MAVEN_REPORT_DIR
+import static MavenProjectDeterminer.POM_FILE
 import static pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator.GRADLE_REPORT_DIR
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS

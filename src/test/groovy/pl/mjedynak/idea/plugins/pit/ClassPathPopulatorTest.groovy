@@ -4,7 +4,12 @@ import com.intellij.openapi.application.PathManager
 import com.intellij.util.PathsList
 import spock.lang.Specification
 
-import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.*
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.LIB_DIR
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.PITEST_COMMAND_LINE_JAR
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.PITEST_JAR
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.PITEST_VERSION
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.PLUGIN_NAME
+import static pl.mjedynak.idea.plugins.pit.ClassPathPopulator.SEPARATOR
 
 class ClassPathPopulatorTest extends Specification {
 
@@ -13,7 +18,7 @@ class ClassPathPopulatorTest extends Specification {
     private final static String PLUGINS_PATH = 'path'
 
     def "should populate classpath"() {
-        GroovyMock(PathManager, global: true)
+        GroovyMock(PathManager, global:true)
         PathManager.pluginsPath >> PLUGINS_PATH
 
         when:

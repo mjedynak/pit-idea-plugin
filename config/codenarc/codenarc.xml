@@ -14,6 +14,7 @@
     <ruleset-ref path='rulesets/dry.xml'/>
     <ruleset-ref path='rulesets/exceptions.xml'/>
     <ruleset-ref path='rulesets/formatting.xml'>
+        <exclude name='ClassJavadoc'/>
         <exclude name='LineLength'/>
     </ruleset-ref>
     <ruleset-ref path='rulesets/generic.xml'/>
