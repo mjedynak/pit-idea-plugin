@@ -7,7 +7,7 @@ apply from: 'idea.gradle'
 // --- properties ---
 ext.ideaInstallationPath = 'C:/Program Files (x86)/JetBrains/IntelliJ IDEA Community Edition 14.0'
 ext.ideaJdk = 'IDEA IC-135.475'
-ext.pitVersion = '1.0.0'
+ext.pitVersion = '1.1.4'
 sourceCompatibility = 1.6
 // --- properties ---
 

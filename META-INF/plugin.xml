@@ -3,7 +3,7 @@
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
         <br/>
-        Bundled with PIT 1.0.0
+        Bundled with PIT 1.1.4
         <br/><br/>
         Adds a 'Run configuration' that allows to execute PIT within IDE.
         <br/><br/>
@@ -13,6 +13,11 @@
     <version>1.3.4-SNAPSHOT</version>
     <change-notes>
         <![CDATA[
+           version 1.3.4
+           <br/>
+           <ul>
+           <li>Upgraded PIT version to 1.1.4</li>
+           </ul>
            version 1.3.3
            <br/>
            <ul>
