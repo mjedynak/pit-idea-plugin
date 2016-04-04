@@ -5,7 +5,7 @@ import com.intellij.util.PathsList
 
 class ClassPathPopulator {
 
-    static final String PITEST_VERSION = '1.1.4'
+    static final String PITEST_VERSION = '1.1.9'
     static final String PITEST_JAR = 'pitest-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-' + PITEST_VERSION + JAR_EXTENSION
     static final String SEPARATOR = System.getProperty('file.separator')

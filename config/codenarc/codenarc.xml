@@ -7,7 +7,9 @@
     <ruleset-ref path='rulesets/basic.xml'/>
     <ruleset-ref path='rulesets/braces.xml'/>
     <ruleset-ref path='rulesets/concurrency.xml'/>
-    <ruleset-ref path='rulesets/convention.xml'/>
+    <ruleset-ref path='rulesets/convention.xml'>
+        <exclude name='NoDef'/>
+    </ruleset-ref>
     <ruleset-ref path='rulesets/design.xml'>
         <exclude name='PrivateFieldCouldBeFinal'/>
     </ruleset-ref>
