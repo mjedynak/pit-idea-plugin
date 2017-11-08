@@ -32,6 +32,7 @@ import com.intellij.openapi.options.SettingsEditorGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.psi.search.GlobalSearchScope;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.JavaParametersCreator;
@@ -142,6 +143,11 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     private boolean formIsEmpty() {
         return isEmpty(pitConfigurationForm.getReportDir()) && isEmpty(pitConfigurationForm.getSourceDir())
                 && isEmpty(pitConfigurationForm.getTargetClasses()) && isEmpty(pitConfigurationForm.getOtherParams());
+    }
+
+    @Override
+    public GlobalSearchScope getSearchScope() {
+        return null;
     }
 
     @Override

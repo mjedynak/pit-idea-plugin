@@ -10,6 +10,7 @@ import pl.mjedynak.idea.plugins.pit.cli.PitCommandLineArgumentsContainerImpl
 import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
+import spock.lang.Ignore
 import spock.lang.Specification
 
 import static DefaultArgumentsContainerPopulator.ALL_CLASSES_SUFFIX
@@ -110,6 +111,7 @@ class DefaultArgumentsContainerPopulatorTest extends Specification {
         container.get(SOURCE_DIRS) == secondPath
     }
 
+    @Ignore
     def "should create container with default target classes"() {
         VirtualFile sourceRoot = Mock()
         PsiDirectory directory = Mock()
