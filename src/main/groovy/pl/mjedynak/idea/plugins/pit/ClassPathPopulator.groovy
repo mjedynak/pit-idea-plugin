@@ -18,12 +18,12 @@ class ClassPathPopulator {
         String pluginsPath = PathManager.pluginsPath
         String path = pluginsPath + SEPARATOR + PLUGIN_NAME + SEPARATOR + LIB_DIR + SEPARATOR
         classPath.with {
-            add(path + PITEST_JAR)
-            add(path + PITEST_COMMAND_LINE_JAR)
-            add(path + PITEST_ENTRY_JAR)
-            add(path + 'xstream-1.4.8.jar')
-            add(path + 'xmlpull-1.1.3.1.jar')
-            add(path + 'xpp3_min-1.1.4c.jar')
+            addFirst(path + PITEST_JAR)
+            addFirst(path + PITEST_COMMAND_LINE_JAR)
+            addFirst(path + PITEST_ENTRY_JAR)
+            addFirst(path + 'xstream-1.4.8.jar')
+            addFirst(path + 'xmlpull-1.1.3.1.jar')
+            addFirst(path + 'xpp3_min-1.1.4c.jar')
         }
     }
 }

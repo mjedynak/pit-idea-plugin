@@ -3,17 +3,21 @@ package pl.mjedynak.idea.plugins.pit.gui.populator;
 import com.intellij.execution.configurations.ParametersList;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.CLASSPATH;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.INCLUDE_LAUNCH_CLASSPATH;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 
 public class ProgramParametersListPopulator {
 
-    public void populateProgramParametersList(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
+    public void populateProgramParametersList(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm, String pitClassPath) {
         addReportDir(programParametersList, pitConfigurationForm);
         addSourceDir(programParametersList, pitConfigurationForm);
         addTargetClasses(programParametersList, pitConfigurationForm);
         addOtherParams(programParametersList, pitConfigurationForm);
+        programParametersList.add(INCLUDE_LAUNCH_CLASSPATH.getName(), "false");
+        programParametersList.add(CLASSPATH.getName(), pitClassPath);
     }
 
     private void addReportDir(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {

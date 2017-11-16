@@ -10,9 +10,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.3.7</version>
+    <version>1.3.8</version>
     <change-notes>
         <![CDATA[
+           version 1.3.8
+           <br/>
+           <ul>
+           <li>Do not use launch classpath to mutate classes (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/12">issue #12</a>, <a href="https://github.com/mjedynak/pit-idea-plugin/issues/15">issue #15</a>)
+           </ul>
            version 1.3.7
            <br/>
            <ul>
@@ -80,7 +85,7 @@
     </change-notes>
 
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
-    <idea-version since-build="171.4249.39"/>
+    <idea-version since-build="172.4574.11"/>
 
     <application-components>
     </application-components>

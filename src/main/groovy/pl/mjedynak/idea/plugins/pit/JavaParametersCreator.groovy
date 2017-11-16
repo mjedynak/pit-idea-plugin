@@ -16,13 +16,15 @@ class JavaParametersCreator {
 
     ProgramParametersListPopulator programParametersListPopulator = new ProgramParametersListPopulator()
     ClassPathPopulator classPathPopulator = new ClassPathPopulator()
+    JavaParametersToPitClasspathConverter converter = new JavaParametersToPitClasspathConverter()
 
     JavaParameters createJavaParameters(RunConfigurationModule runConfigurationModule, PitConfigurationForm pitConfigurationForm) {
         JavaParameters javaParameters = new JavaParameters()
         ModuleManager moduleManager = ModuleManager.getInstance(runConfigurationModule.project)
         configureModules(moduleManager, javaParameters)
+        String pitClassPath = converter.convert(javaParameters)
+        programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm, pitClassPath)
         javaParameters.setMainClass(PIT_MAIN_CLASS)
-        programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm)
         classPathPopulator.populateClassPathWithPitJar(javaParameters.classPath)
         javaParameters
     }
