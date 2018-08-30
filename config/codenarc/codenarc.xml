@@ -9,6 +9,8 @@
     <ruleset-ref path='rulesets/concurrency.xml'/>
     <ruleset-ref path='rulesets/convention.xml'>
         <exclude name='NoDef'/>
+        <exclude name='MethodReturnTypeRequired'/>
+        <exclude name='VariableTypeRequired'/>
     </ruleset-ref>
     <ruleset-ref path='rulesets/design.xml'>
         <exclude name='PrivateFieldCouldBeFinal'/>
@@ -33,7 +35,7 @@
     <ruleset-ref path='rulesets/size.xml'>
         <exclude name='CrapMetric'/>
     </ruleset-ref>
-    <ruleset-ref path='rulesets/unnecessary.xml'/>
+    <!-- ruleset-ref path='rulesets/unnecessary.xml'/ -->
     <ruleset-ref path='rulesets/unused.xml'/>
 
 

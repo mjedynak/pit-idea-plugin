@@ -5,10 +5,10 @@ apply plugin: 'idea'
 apply from: 'idea.gradle'
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/172.4574.11'
-ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-172.4574.11'
-ext.pitVersion = '1.2.4'
-sourceCompatibility = 1.6
+ext.ideaInstallationPath = 'C:/Programs/ideaIU'
+ext.ideaJdk = 'IntelliJ IDEA IU-182.4129.33'
+ext.pitVersion = '1.4.2'
+sourceCompatibility = 1.8
 // --- properties ---
 
 // workaround for http://issues.gradle.org/browse/GRADLE-2538
@@ -16,7 +16,7 @@ sourceSets.main.java.srcDirs = []
 sourceSets.main.groovy.srcDir 'src/main/java'
 
 jacoco {
-    toolVersion = "0.7.0.201403182114"
+    toolVersion = "0.8.1"
 }
 
 jacocoTestReport {
@@ -26,6 +26,10 @@ jacocoTestReport {
 build.dependsOn jacocoTestReport
 
 repositories {
+    maven {
+        name = "nexus.ucm.be"
+        url = "http://nexus.ucm.be/nexus/repository/maven-sec"
+    }
     mavenCentral()
     mavenLocal()
 }
@@ -53,10 +57,8 @@ dependencies {
     releaseJars("com.thoughtworks.xstream:xstream:1.4.8")
 
     compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
-    compile 'org.codehaus.groovy:groovy-all:2.4.6'
-    testCompile ('org.spockframework:spock-core:0.7-groovy-2.0') {
-        exclude group: 'org.codehaus.groovy'
-    }
+    compile 'org.codehaus.groovy:groovy-all:2.4.15'
+    testCompile "org.spockframework:spock-core:1.1-groovy-2.4"
     testCompile 'org.objenesis:objenesis:1.2'
 }
 
