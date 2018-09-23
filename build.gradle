@@ -5,9 +5,9 @@ apply plugin: 'idea'
 apply from: 'idea.gradle'
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/172.4574.11'
-ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-172.4574.11'
-ext.pitVersion = '1.2.4'
+ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/182.3911.36'
+ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-182.3911.36'
+ext.pitVersion = '1.4.2'
 sourceCompatibility = 1.6
 // --- properties ---
 
@@ -53,7 +53,7 @@ dependencies {
     releaseJars("com.thoughtworks.xstream:xstream:1.4.8")
 
     compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
-    compile 'org.codehaus.groovy:groovy-all:2.4.6'
+    compile 'org.codehaus.groovy:groovy-all:2.4.15'
     testCompile ('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude group: 'org.codehaus.groovy'
     }
