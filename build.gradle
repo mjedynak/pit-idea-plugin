@@ -5,9 +5,9 @@ apply plugin: 'idea'
 apply from: 'idea.gradle'
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/182.3911.36'
-ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-182.3911.36'
-ext.pitVersion = '1.4.2'
+ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/183.4284.148'
+ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-183.4284.148'
+ext.pitVersion = '1.4.3'
 sourceCompatibility = 1.6
 // --- properties ---
 
