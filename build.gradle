@@ -1,12 +1,39 @@
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            url 'http://dl.bintray.com/jetbrains/intellij-plugin-service'
+        }
+
+    }
+    dependencies {
+        classpath "org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.5.0-SNAPSHOT"
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.4.2"
+}
+
+apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'codenarc'
 apply plugin: "jacoco"
 apply plugin: 'idea'
-apply from: 'idea.gradle'
+apply plugin: 'org.jetbrains.intellij'
+apply plugin: 'codenarc'
+
+intellij {
+    version '2018.2'
+}
+
 
 // --- properties ---
-ext.ideaInstallationPath = 'C:/Users/Michal/AppData/Local/JetBrains/Toolbox/apps/IDEA-C/ch-0/183.4284.148'
-ext.ideaJdk = 'IntelliJ IDEA Community Edition IC-183.4284.148'
 ext.pitVersion = '1.4.3'
 sourceCompatibility = 1.6
 // --- properties ---
@@ -34,25 +61,13 @@ configurations {
     releaseJars
 }
 
-task dist(type: Zip) {
-    from(jar.outputs.files) {
-        into('pit-idea-plugin/lib')
-    }
-    from(configurations.releaseJars) {
-        into('pit-idea-plugin/lib')
-    }
-    archiveName 'pit-idea-plugin.zip'
-    dependsOn build
-}
-
 dependencies {
 
-    releaseJars("org.pitest:pitest-command-line:$pitVersion") { transitive = false }
-    releaseJars("org.pitest:pitest-entry:$pitVersion") { transitive = false }
-    releaseJars("org.pitest:pitest:$pitVersion") { transitive = false }
-    releaseJars("com.thoughtworks.xstream:xstream:1.4.8")
+    compile("org.pitest:pitest-command-line:$pitVersion") { transitive = false }
+    compile("org.pitest:pitest-entry:$pitVersion") { transitive = false }
+    compile("org.pitest:pitest:$pitVersion") { transitive = false }
+    compile("com.thoughtworks.xstream:xstream:1.4.8")
 
-    compile fileTree(dir: ideaInstallationPath + '/lib', include: '*.jar')
     compile 'org.codehaus.groovy:groovy-all:2.4.15'
     testCompile ('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude group: 'org.codehaus.groovy'

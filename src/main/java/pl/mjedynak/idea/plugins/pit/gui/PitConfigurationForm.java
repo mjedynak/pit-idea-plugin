@@ -8,10 +8,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
 
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 import java.awt.Dimension;
 import java.awt.Insets;
 
@@ -26,6 +23,7 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration> {
     private JTextField reportDirTextField;
     private JTextField otherParamsTextField;
     private JLabel otherParamsLabel;
+    private JCheckBox useClasspathJarCheckBox;
 
 
     public String getReportDir() {
@@ -44,6 +42,10 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration> {
         return otherParamsTextField.getText();
     }
 
+    public boolean getUseClasspathJar() {
+        return  useClasspathJarCheckBox.isSelected();
+    }
+
     public void setReportDir(String reportDir) {
         reportDirTextField.setText(reportDir);
     }
@@ -59,6 +61,8 @@ public class PitConfigurationForm extends SettingsEditor<PitRunConfiguration> {
     public void setOtherParams(String otherParams) {
         otherParamsTextField.setText(otherParams);
     }
+
+    public void setUseClasspathJarCheckBox(boolean useClasspathJar) {useClasspathJarCheckBox.setSelected(useClasspathJar);}
 
     @Override
     protected void resetEditorFrom(PitRunConfiguration s) {

@@ -14,10 +14,10 @@ class PitRunConfigurationStorer {
     static final String OTHER_PARAMS = 'otherParams'
 
     void readExternal(PitConfigurationForm pitConfigurationForm, Element element) {
-        pitConfigurationForm.setReportDir(element.getAttribute(REPORT_DIR.toString())?.value)
-        pitConfigurationForm.setSourceDir(element.getAttribute(SOURCE_DIRS.toString())?.value)
-        pitConfigurationForm.setTargetClasses(element.getAttribute(TARGET_CLASSES.toString())?.value)
-        pitConfigurationForm.setOtherParams(element.getAttribute(OTHER_PARAMS)?.value)
+        pitConfigurationForm.reportDir = element.getAttribute(REPORT_DIR.toString())?.value
+        pitConfigurationForm.sourceDir = element.getAttribute(SOURCE_DIRS.toString())?.value
+        pitConfigurationForm.targetClasses = element.getAttribute(TARGET_CLASSES.toString())?.value
+        pitConfigurationForm.otherParams = element.getAttribute(OTHER_PARAMS)?.value
     }
 
     void writeExternal(PitConfigurationForm pitConfigurationForm, Element element) {
