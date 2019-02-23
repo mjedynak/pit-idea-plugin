@@ -1,5 +1,5 @@
 <idea-plugin url="https://github.com/mjedynak/pit-idea-plugin">
-    <name>PIT mutation testing Idea plugin</name>
+    <name>PIT mutation testing</name>
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
         <br/>
@@ -10,9 +10,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.3.10</version>
+    <version>1.4.0</version>
     <change-notes>
         <![CDATA[
+           version 1.4.0
+           <br/>
+           <ul>
+           <li>Make command line shorter (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/18">issue #18</a>) (contribution by <a href="https://github.com/divyakumarjain">divyakumarjain</a>)</li>
+           </ul>
            version 1.3.10
            <br/>
            <ul>

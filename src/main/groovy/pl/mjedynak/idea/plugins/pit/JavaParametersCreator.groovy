@@ -1,5 +1,6 @@
 package pl.mjedynak.idea.plugins.pit
 
+import com.intellij.execution.ShortenCommandLine
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.RunConfigurationModule
 import com.intellij.execution.util.JavaParametersUtil
@@ -20,6 +21,7 @@ class JavaParametersCreator {
 
     JavaParameters createJavaParameters(RunConfigurationModule runConfigurationModule, PitConfigurationForm pitConfigurationForm) {
         JavaParameters javaParameters = new JavaParameters()
+        javaParameters.setShortenCommandLine(ShortenCommandLine.CLASSPATH_FILE, runConfigurationModule.project)
         ModuleManager moduleManager = ModuleManager.getInstance(runConfigurationModule.project)
         configureModules(moduleManager, javaParameters)
         String pitClassPath = converter.convert(javaParameters)
