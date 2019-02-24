@@ -26,6 +26,7 @@ class JavaParametersCreator {
         configureModules(moduleManager, javaParameters)
         String pitClassPath = converter.convert(javaParameters)
         programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm, pitClassPath)
+        javaParameters.setWorkingDirectory(runConfigurationModule.project.getBasePath())
         javaParameters.setMainClass(PIT_MAIN_CLASS)
         classPathPopulator.populateClassPathWithPitJar(javaParameters.classPath)
         javaParameters
