@@ -8,6 +8,7 @@ import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.INCL
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_TESTS;
 
 public class ProgramParametersListPopulator {
 
@@ -15,6 +16,7 @@ public class ProgramParametersListPopulator {
         addReportDir(programParametersList, pitConfigurationForm);
         addSourceDir(programParametersList, pitConfigurationForm);
         addTargetClasses(programParametersList, pitConfigurationForm);
+        addTargetTests(programParametersList, pitConfigurationForm);
         addOtherParams(programParametersList, pitConfigurationForm);
         programParametersList.add(INCLUDE_LAUNCH_CLASSPATH.getName(), "false");
         programParametersList.add(CLASSPATH.getName(), pitClassPath);
@@ -33,6 +35,14 @@ public class ProgramParametersListPopulator {
     private void addTargetClasses(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
         programParametersList.add(TARGET_CLASSES.getName());
         programParametersList.add(pitConfigurationForm.getTargetClasses());
+    }
+
+    private void addTargetTests(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
+        /* Only add this parameter if it is set - otherwise default is the target classes */
+        if (!pitConfigurationForm.getTargetTests().isEmpty()) {
+            programParametersList.add(TARGET_TESTS.getName());
+            programParametersList.add(pitConfigurationForm.getTargetTests());
+        }
     }
 
     private void addOtherParams(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {

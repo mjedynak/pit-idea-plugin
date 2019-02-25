@@ -109,6 +109,18 @@
     </project-components>
 
     <actions>
+        <action id="pitest.RunAllPit" class="pl.mjedynak.idea.plugins.pit.actions.RunAllPitAction" text="Pitest all tests in module" description="Mutate all tests against all classes in the project" icon="/pit.gif">
+            <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>
+        </action>
+        <action id="pitest.RunSomePit"
+                class="pl.mjedynak.idea.plugins.pit.actions.RunSomeTestsPitAction" text="Pitest with these tests" description="Mutate only the tests in this directory against all classes in the project" icon="/pit.gif">
+            <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
+        </action>
+        <action id="pitest.TestSomePit"
+                class="pl.mjedynak.idea.plugins.pit.actions.PitTestSomeClassesAction" text="Pitest these classes" description="Mutate all tests against the classes in this directory" icon="/pit.gif">
+            <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
