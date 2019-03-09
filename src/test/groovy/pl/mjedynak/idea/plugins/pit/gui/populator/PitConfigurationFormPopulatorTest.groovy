@@ -14,11 +14,13 @@ class PitConfigurationFormPopulatorTest extends Specification {
     String reportDir = 'reportDir'
     String sourceDir = 'srcDir'
     String targetClasses = 'targetClasses'
+    String targetTests = 'targetTests'
 
     def "should populate form text fields using argument container created by factory"() {
         pitCommandLineArgumentsContainer.get(PitCommandLineArgument.REPORT_DIR) >> reportDir
         pitCommandLineArgumentsContainer.get(PitCommandLineArgument.SOURCE_DIRS) >> sourceDir
         pitCommandLineArgumentsContainer.get(PitCommandLineArgument.TARGET_CLASSES) >> targetClasses
+        pitCommandLineArgumentsContainer.get(PitCommandLineArgument.TARGET_TESTS) >> targetTests
 
         when:
         pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, pitCommandLineArgumentsContainer)
@@ -27,6 +29,7 @@ class PitConfigurationFormPopulatorTest extends Specification {
         1 * pitConfigurationForm.setReportDir(reportDir)
         1 * pitConfigurationForm.setSourceDir(sourceDir)
         1 * pitConfigurationForm.setTargetClasses(targetClasses)
+        1 * pitConfigurationForm.setTargetTests(targetTests)
         1 * pitConfigurationForm.setOtherParams(pitConfigurationFormPopulator.OTHER_PARAMS)
     }
 }
