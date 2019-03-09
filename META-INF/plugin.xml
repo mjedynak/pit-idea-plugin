@@ -10,9 +10,15 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <change-notes>
         <![CDATA[
+           version 1.4.1
+           <br/>
+           <ul>
+           <li>Set working directory to project base path (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/26">issue #26</a>) (contribution by <a href="https://github.com/mduggan">mduggan</a>)</li>
+           <li>Add context menu actions allowing options for easier running (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/6">issue #6</a>) (contribution by <a href="https://github.com/mduggan">mduggan</a>)</li>
+           </ul>
            version 1.4.0
            <br/>
            <ul>
