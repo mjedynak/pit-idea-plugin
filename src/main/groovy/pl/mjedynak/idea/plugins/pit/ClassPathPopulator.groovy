@@ -5,7 +5,7 @@ import com.intellij.util.PathsList
 
 class ClassPathPopulator {
 
-    static final String PITEST_VERSION = '1.4.3'
+    static final String PITEST_VERSION = '1.5.1'
     static final String PITEST_JAR = 'pitest-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_ENTRY_JAR = 'pitest-entry-' + PITEST_VERSION + JAR_EXTENSION

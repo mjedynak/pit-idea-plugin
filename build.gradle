@@ -1,16 +1,15 @@
 plugins {
-    id "org.jetbrains.intellij" version "0.4.2"
+    id 'groovy'
+    id "org.jetbrains.intellij" version "0.4.18"
 }
 
-apply plugin: 'groovy'
-apply plugin: 'org.jetbrains.intellij'
-
 intellij {
-    version '2018.3'
+    version '2020.1'
+    plugins 'java'
 }
 
 // --- properties ---
-ext.pitVersion = '1.4.3'
+ext.pitVersion = '1.5.1'
 sourceCompatibility = 1.8
 // --- properties ---
 

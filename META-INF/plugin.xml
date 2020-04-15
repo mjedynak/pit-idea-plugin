@@ -1,18 +1,23 @@
 <idea-plugin url="https://github.com/mjedynak/pit-idea-plugin">
-    <name>PIT mutation testing Idea plugin</name>
+    <name>PIT mutation testing</name>
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
         <br/>
-        Bundled with PIT 1.4.3
+        Bundled with PIT 1.5.1
         <br/><br/>
         Adds a 'Run configuration' that allows to execute PIT within IDE.
         <br/><br/>
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.1</version>
+    <version>1.4.2</version>
     <change-notes>
         <![CDATA[
+           version 1.4.2
+           <br/>
+           <ul>
+           <li>Upgraded PIT version to 1.5.1</li>
+           </ul>
            version 1.4.1
            <br/>
            <ul>
@@ -106,7 +111,7 @@
     </change-notes>
 
     <vendor email="m.jedynak [at] gmail.com">Michal Jedynak</vendor>
-    <idea-version since-build="182.3911.36"/>
+    <idea-version since-build="201.6668.121"/>
 
     <application-components>
     </application-components>
@@ -132,4 +137,5 @@
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="pl.mjedynak.idea.plugins.pit.configuration.PitConfigurationType"/>
     </extensions>
+    <depends>com.intellij.modules.java</depends>
 </idea-plugin>
