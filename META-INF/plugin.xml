@@ -10,9 +10,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.2</version>
+    <version>1.4.3</version>
     <change-notes>
         <![CDATA[
+           version 1.4.3
+           <br/>
+           <ul>
+           <li>Allow long classpath when running mutation tests (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/31">issue #31</a>)</li>
+           </ul>
            version 1.4.2
            <br/>
            <ul>

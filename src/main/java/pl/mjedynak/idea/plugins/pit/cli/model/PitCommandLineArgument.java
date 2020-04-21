@@ -4,9 +4,7 @@ public enum PitCommandLineArgument {
     REPORT_DIR("--reportDir"),
     SOURCE_DIRS("--sourceDirs"),
     TARGET_CLASSES("--targetClasses"),
-    TARGET_TESTS("--targetTests"),
-    INCLUDE_LAUNCH_CLASSPATH("--includeLaunchClasspath"),
-    CLASSPATH("--classPath");
+    TARGET_TESTS("--targetTests");
 
     private String name;
 
