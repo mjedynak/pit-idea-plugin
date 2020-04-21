@@ -1,6 +1,5 @@
 package pl.mjedynak.idea.plugins.pit
 
-import com.intellij.execution.ShortenCommandLine
 import com.intellij.execution.configurations.JavaParameters
 import com.intellij.execution.configurations.RunConfigurationModule
 import com.intellij.execution.util.JavaParametersUtil
@@ -17,15 +16,13 @@ class JavaParametersCreator {
 
     ProgramParametersListPopulator programParametersListPopulator = new ProgramParametersListPopulator()
     ClassPathPopulator classPathPopulator = new ClassPathPopulator()
-    JavaParametersToPitClasspathConverter converter = new JavaParametersToPitClasspathConverter()
 
     JavaParameters createJavaParameters(RunConfigurationModule runConfigurationModule, PitConfigurationForm pitConfigurationForm) {
         JavaParameters javaParameters = new JavaParameters()
-        javaParameters.setShortenCommandLine(ShortenCommandLine.CLASSPATH_FILE, runConfigurationModule.project)
+        javaParameters.setUseClasspathJar(true)
         ModuleManager moduleManager = ModuleManager.getInstance(runConfigurationModule.project)
         configureModules(moduleManager, javaParameters)
-        String pitClassPath = converter.convert(javaParameters)
-        programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm, pitClassPath)
+        programParametersListPopulator.populateProgramParametersList(javaParameters.programParametersList, pitConfigurationForm)
         javaParameters.setWorkingDirectory(runConfigurationModule.project.getBasePath())
         javaParameters.setMainClass(PIT_MAIN_CLASS)
         classPathPopulator.populateClassPathWithPitJar(javaParameters.classPath)
@@ -38,4 +35,5 @@ class JavaParametersCreator {
             JavaParametersUtil.configureModule(module, javaParameters, JavaParameters.JDK_AND_CLASSES_AND_TESTS, null)
         }
     }
+
 }
