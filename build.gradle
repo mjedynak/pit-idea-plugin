@@ -1,15 +1,16 @@
 plugins {
     id 'groovy'
-    id "org.jetbrains.intellij" version "0.4.18"
+    id "org.jetbrains.intellij" version "0.4.21"
 }
 
 intellij {
-    version '2020.1'
+    version '2020.1.1'
     plugins 'java'
 }
 
 // --- properties ---
 ext.pitVersion = '1.5.1'
+ext.junit5Plugin = '0.12'
 sourceCompatibility = 1.8
 // --- properties ---
 
@@ -29,7 +30,7 @@ dependencies {
     implementation("org.pitest:pitest-entry:$pitVersion") { transitive = false }
     implementation("org.pitest:pitest:$pitVersion") { transitive = false }
     implementation("com.thoughtworks.xstream:xstream:1.4.8")
-
+    implementation "org.pitest:pitest-junit5-plugin:$junit5Plugin"
     testImplementation ('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude group: 'org.codehaus.groovy'
     }
