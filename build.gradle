@@ -29,6 +29,7 @@ dependencies {
     implementation("org.pitest:pitest-entry:$pitVersion") { transitive = false }
     implementation("org.pitest:pitest:$pitVersion") { transitive = false }
     implementation('com.thoughtworks.xstream:xstream:1.4.8')
+    implementation "org.pitest:pitest-junit5-plugin:0.12"
 
     testImplementation ('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude group: 'org.codehaus.groovy'
