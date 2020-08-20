@@ -10,13 +10,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.4-SNAPSHOT</version>
+    <version>1.4.4</version>
     <change-notes>
         <![CDATA[
            version 1.4.4
            <br/>
            <ul>
-           <li>Upgrade PIT version to 1.5.2</li>
+           <li>Upgrade PIT version to 1.5.2 (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/39">issue #39</a>)</li>
+           <li>JUnit 5 support (<a href="https://github.com/mjedynak/pit-idea-plugin/issues/34">issue #34</a>)</li>
            </ul>
            version 1.4.3
            <br/>
