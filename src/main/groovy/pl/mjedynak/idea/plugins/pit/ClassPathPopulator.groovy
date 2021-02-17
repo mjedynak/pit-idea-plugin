@@ -24,6 +24,7 @@ class ClassPathPopulator {
             addFirst(path + 'xstream-1.4.8.jar')
             addFirst(path + 'xmlpull-1.1.3.1.jar')
             addFirst(path + 'xpp3_min-1.1.4c.jar')
+            addFirst(path + 'pitest-junit5-plugin-0.12.jar')
         }
     }
 }
