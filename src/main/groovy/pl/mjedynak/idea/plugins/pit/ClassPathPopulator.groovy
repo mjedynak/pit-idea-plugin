@@ -5,7 +5,7 @@ import com.intellij.util.PathsList
 
 class ClassPathPopulator {
 
-    static final String PITEST_VERSION = '1.6.7'
+    static final String PITEST_VERSION = '1.7.4'
     static final String PITEST_JAR = 'pitest-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_ENTRY_JAR = 'pitest-entry-' + PITEST_VERSION + JAR_EXTENSION
@@ -24,7 +24,7 @@ class ClassPathPopulator {
             addFirst(path + 'xstream-1.4.8.jar')
             addFirst(path + 'xmlpull-1.1.3.1.jar')
             addFirst(path + 'xpp3_min-1.1.4c.jar')
-            addFirst(path + 'pitest-junit5-plugin-0.12.jar')
+            addFirst(path + 'pitest-junit5-plugin-0.15.jar')
         }
     }
 }

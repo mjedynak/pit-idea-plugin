@@ -9,14 +9,15 @@ import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.containers.ContainerUtil;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.Icon;
+import javax.swing.*;
 
 public class PitConfigurationType implements ConfigurationType {
 
-    private static final Icon ICON = IconLoader.getIcon("/pit.gif");
+    private static final Icon ICON = IconLoader.getIcon("/pit.gif", PitConfigurationType.class);
     private static final String DISPLAY_NAME = "PIT Runner";
     private static final String ID = "PIT";
     private static final String CONFIGURATION_DESCRIPTION = "Executes PIT mutation testing";
@@ -39,7 +40,14 @@ public class PitConfigurationType implements ConfigurationType {
             public void onNewConfigurationCreated(@NotNull RunConfiguration configuration) {
                 ((ModuleBasedConfiguration) configuration).onNewConfigurationCreated();
             }
+
+            @Override
+            public @NotNull @NonNls
+            String getId() {
+                return getName();
+            }
         };
+
     }
 
     @Override
