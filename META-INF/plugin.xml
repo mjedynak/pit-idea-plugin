@@ -1,5 +1,6 @@
 <idea-plugin url="https://github.com/mjedynak/pit-idea-plugin">
     <name>PIT Mutation Testing</name>
+    <id>PIT mutation testing Idea plugin</id>
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT Mutation Testing (pitest.org).
         <br/>
