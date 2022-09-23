@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/mjedynak/pit-idea-plugin">
-    <name>PIT mutation testing Idea plugin</name>
+    <name>PIT Mutation Testing Idea</name>
     <description><![CDATA[
-        IntelliJ IDEA plugin for PIT mutation testing (http://pitest.org).
+        IntelliJ IDEA plugin for PIT Mutation Testing (pitest.org).
         <br/>
         Bundled with PIT 1.7.4 and JUnit5 plugin 0.15
         <br/><br/>
@@ -142,16 +142,16 @@
     </project-components>
 
     <actions>
-        <action id="pitest.RunAllPit" class="pl.mjedynak.idea.plugins.pit.actions.RunAllPitAction" text="Pitest all tests in module" description="Mutate all tests against all classes in the project" icon="/pit.gif">
+        <action id="pitest.RunAllPit" class="pl.mjedynak.idea.plugins.pit.actions.RunAllPitAction" text="Pitest All Tests in Module" description="Mutate all tests against all classes in the project" icon="/pit.svg">
             <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
             <add-to-group group-id="EditorPopupMenu.Run" anchor="last"/>
         </action>
         <action id="pitest.RunSomePit"
-                class="pl.mjedynak.idea.plugins.pit.actions.RunSomeTestsPitAction" text="Pitest with these tests" description="Mutate only the tests in this directory against all classes in the project" icon="/pit.gif">
+                class="pl.mjedynak.idea.plugins.pit.actions.RunSomeTestsPitAction" text="Pitest with These Tests" description="Mutate only the tests in this directory against all classes in the project" icon="/pit.svg">
             <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
         </action>
         <action id="pitest.TestSomePit"
-                class="pl.mjedynak.idea.plugins.pit.actions.PitTestSomeClassesAction" text="Pitest these classes" description="Mutate all tests against the classes in this directory" icon="/pit.gif">
+                class="pl.mjedynak.idea.plugins.pit.actions.PitTestSomeClassesAction" text="Pitest These Classes" description="Mutate all tests against the classes in this directory" icon="/pit.svg">
             <add-to-group group-id="ProjectViewPopupMenuRunGroup" anchor="last"/>
         </action>
     </actions>

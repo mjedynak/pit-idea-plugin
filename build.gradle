@@ -40,6 +40,7 @@ jar {
     metaInf {
         from('META-INF') {
             include 'plugin.xml'
+            include 'pluginIcon.svg'
         }
     }
 }

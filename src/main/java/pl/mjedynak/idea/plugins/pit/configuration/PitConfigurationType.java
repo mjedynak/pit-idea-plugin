@@ -17,7 +17,7 @@ import javax.swing.*;
 
 public class PitConfigurationType implements ConfigurationType {
 
-    private static final Icon ICON = IconLoader.getIcon("/pit.gif", PitConfigurationType.class);
+    private static final Icon ICON = IconLoader.getIcon("/pit.svg", PitConfigurationType.class);
     private static final String DISPLAY_NAME = "PIT Runner";
     private static final String ID = "PIT";
     private static final String CONFIGURATION_DESCRIPTION = "Executes PIT mutation testing";
