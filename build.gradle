@@ -9,7 +9,7 @@ intellij {
 }
 
 // --- properties ---
-ext.pitVersion = '1.7.4'
+ext.pitVersion = '1.9.5'
 sourceCompatibility = 1.8
 // --- properties ---
 
@@ -28,7 +28,7 @@ dependencies {
     implementation("org.pitest:pitest-entry:$pitVersion") { transitive = false }
     implementation("org.pitest:pitest:$pitVersion") { transitive = false }
     implementation('com.thoughtworks.xstream:xstream:1.4.8')
-    implementation "org.pitest:pitest-junit5-plugin:0.15"
+    implementation 'org.pitest:pitest-junit5-plugin:1.0.0'
     compileOnly 'org.codehaus.groovy:groovy-all:2.5.14'
     testCompileOnly 'org.codehaus.groovy:groovy-all:2.5.14'
     testImplementation('org.spockframework:spock-core:0.7-groovy-2.0') {
