@@ -5,7 +5,7 @@ import com.intellij.util.PathsList
 
 class ClassPathPopulator {
 
-    static final String PITEST_VERSION = '1.11.6'
+    static final String PITEST_VERSION = '1.15.2'
     static final String PITEST_JAR = 'pitest-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_COMMAND_LINE_JAR = 'pitest-command-line-' + PITEST_VERSION + JAR_EXTENSION
     static final String PITEST_ENTRY_JAR = 'pitest-entry-' + PITEST_VERSION + JAR_EXTENSION
@@ -23,7 +23,7 @@ class ClassPathPopulator {
             addFirst(path + PITEST_ENTRY_JAR)
             addFirst(path + 'commons-lang3-3.12.0.jar')
             addFirst(path + 'commons-text-1.10.0.jar')
-            addFirst(path + 'pitest-junit5-plugin-1.1.2.jar')
+            addFirst(path + 'pitest-junit5-plugin-1.2.0.jar')
         }
     }
 }
