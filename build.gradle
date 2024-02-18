@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id 'org.jetbrains.intellij' version '1.13.3'
+    id 'org.jetbrains.intellij' version '1.17.1'
 }
 
 intellij {
@@ -8,12 +8,13 @@ intellij {
     plugins = ['java']
 }
 
-// --- properties ---
+
 ext.pitVersion = '1.15.8'
 ext.pitJunit5PluginVersion = '1.2.1'
+
 sourceCompatibility = 17
 targetCompatibility = 17
-// --- properties ---
+
 
 // workaround for http://issues.gradle.org/browse/GRADLE-2538
 sourceSets.main.java.srcDirs = []
@@ -48,5 +49,5 @@ jar {
 }
 
 wrapper {
-    gradleVersion "8.0.2"
+    gradleVersion "8.6"
 }

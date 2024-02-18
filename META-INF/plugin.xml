@@ -11,9 +11,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.10-SNAPSHOT</version>
+    <version>1.4.10</version>
     <change-notes>
         <![CDATA[
+           version 1.4.10
+           <br/>
+           <ul>
+           <li>Upgrade PIT version to 1.15.8</li>
+           <li>Add required junit-platform-launcher dependency to classpath if it's not already present</li>
            version 1.4.9
            <br/>
            <ul>
