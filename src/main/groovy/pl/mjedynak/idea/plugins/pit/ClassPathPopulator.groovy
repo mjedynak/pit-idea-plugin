@@ -7,7 +7,7 @@ import groovy.transform.CompileStatic
 @CompileStatic
 class ClassPathPopulator {
 
-    static final String PITEST_VERSION = '1.15.2'
+    static final String PITEST_VERSION = '1.15.8'
     static final String PITEST_JUNIT5_PLUGIN_VERSION = '1.2.1'
     static final String SEPARATOR = System.getProperty('file.separator')
     static final String PLUGIN_NAME = 'pit-idea-plugin'

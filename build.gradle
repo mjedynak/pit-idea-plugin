@@ -9,7 +9,7 @@ intellij {
 }
 
 // --- properties ---
-ext.pitVersion = '1.15.2'
+ext.pitVersion = '1.15.8'
 ext.pitJunit5PluginVersion = '1.2.1'
 sourceCompatibility = 1.11
 // --- properties ---
