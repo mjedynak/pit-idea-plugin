@@ -12,7 +12,7 @@ import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
 
-import static org.apache.commons.lang.ArrayUtils.isEmpty
+import static org.apache.commons.lang3.ArrayUtils.isEmpty
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES
 

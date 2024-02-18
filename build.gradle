@@ -4,14 +4,15 @@ plugins {
 }
 
 intellij {
-    version = '2021.3'
+    version = '2023.3'
     plugins = ['java']
 }
 
 // --- properties ---
 ext.pitVersion = '1.15.8'
 ext.pitJunit5PluginVersion = '1.2.1'
-sourceCompatibility = 1.11
+sourceCompatibility = 17
+targetCompatibility = 17
 // --- properties ---
 
 // workaround for http://issues.gradle.org/browse/GRADLE-2538
@@ -30,9 +31,9 @@ dependencies {
     implementation("org.pitest:pitest:$pitVersion") { transitive = false }
     implementation "org.pitest:pitest-junit5-plugin:$pitJunit5PluginVersion"
     implementation 'org.apache.commons:commons-text:1.10.0'
-    compileOnly 'org.codehaus.groovy:groovy-all:2.5.14'
-    testCompileOnly 'org.codehaus.groovy:groovy-all:2.5.14'
-    testImplementation('org.spockframework:spock-core:0.7-groovy-2.0') {
+    compileOnly 'org.codehaus.groovy:groovy-all:3.0.19'
+    testCompileOnly 'org.codehaus.groovy:groovy-all:3.0.19'
+    testImplementation('org.spockframework:spock-core:2.3-groovy-3.0') {
         exclude group: 'org.codehaus.groovy'
     }
 }
