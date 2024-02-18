@@ -1,11 +1,11 @@
 plugins {
     id 'groovy'
-    id 'org.jetbrains.intellij' version '0.7.3'
+    id 'org.jetbrains.intellij' version '1.13.3'
 }
 
 intellij {
-    version '2021.3'
-    plugins 'java'
+    version = '2021.3'
+    plugins = ['java']
 }
 
 // --- properties ---
@@ -47,5 +47,5 @@ jar {
 }
 
 wrapper {
-    gradleVersion "7.4.2"
+    gradleVersion "8.0.2"
 }
