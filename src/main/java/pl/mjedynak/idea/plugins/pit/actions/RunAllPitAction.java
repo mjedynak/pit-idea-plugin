@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfigurationFactory;
 
-
 public class RunAllPitAction extends PitAction {
 
     protected PitRunConfiguration getConfigurationForActionEvent(final AnActionEvent e) {
@@ -14,7 +13,5 @@ public class RunAllPitAction extends PitAction {
 
         final PitRunConfigurationFactory pitRunConfigurationFactory = new PitRunConfigurationFactory();
         return pitRunConfigurationFactory.createConfiguration(project);
-
     }
-
 }

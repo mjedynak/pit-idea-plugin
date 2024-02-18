@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
 
-abstract public class PitAction extends AnAction {
+public abstract class PitAction extends AnAction {
 
     @Override
     public void update(@NotNull final AnActionEvent e) {
@@ -36,16 +36,13 @@ abstract public class PitAction extends AnAction {
             return;
         }
 
-        final ExecutionEnvironmentBuilder builder = ExecutionEnvironmentBuilder.create(DefaultRunExecutor.getRunExecutorInstance(), pitRunConfiguration);
+        final ExecutionEnvironmentBuilder builder =
+                ExecutionEnvironmentBuilder.create(DefaultRunExecutor.getRunExecutorInstance(), pitRunConfiguration);
 
-        ProgramRunnerUtil.executeConfiguration(builder
-                .contentToReuse(null)
-                .dataContext(null)
-                .activeTarget()
-                .build(), true, true);
-
+        ProgramRunnerUtil.executeConfiguration(
+                builder.contentToReuse(null).dataContext(null).activeTarget().build(), true, true);
     }
 
-    @Nullable abstract PitRunConfiguration getConfigurationForActionEvent(final AnActionEvent e);
-
+    @Nullable
+    abstract PitRunConfiguration getConfigurationForActionEvent(final AnActionEvent e);
 }

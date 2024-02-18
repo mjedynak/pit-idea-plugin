@@ -1,5 +1,7 @@
 package pl.mjedynak.idea.plugins.pit.configuration;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 import com.google.common.base.Optional;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionBundle;
@@ -33,6 +35,9 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.psi.search.GlobalSearchScope;
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.JavaParametersCreator;
@@ -41,12 +46,6 @@ import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory
 import pl.mjedynak.idea.plugins.pit.console.DirectoryReader;
 import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
 import pl.mjedynak.idea.plugins.pit.gui.populator.PitConfigurationFormPopulator;
-
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.apache.commons.lang.StringUtils.isEmpty;
 
 public class PitRunConfiguration extends ModuleBasedConfiguration implements RunConfiguration {
 
@@ -57,8 +56,11 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
     private DefaultArgumentsContainerFactory defaultArgumentsContainerFactory;
     private PitRunConfigurationStorer pitRunConfigurationStorer = new PitRunConfigurationStorer();
 
-    public PitRunConfiguration(String name, Project project, ConfigurationFactory configurationFactory,
-                               DefaultArgumentsContainerFactory defaultArgumentsContainerFactory) {
+    public PitRunConfiguration(
+            String name,
+            Project project,
+            ConfigurationFactory configurationFactory,
+            DefaultArgumentsContainerFactory defaultArgumentsContainerFactory) {
         super(name, new JavaRunConfigurationModule(project, false), configurationFactory);
         this.defaultArgumentsContainerFactory = defaultArgumentsContainerFactory;
     }
@@ -72,16 +74,17 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
         return group;
     }
 
-
     @Override
-    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env) throws ExecutionException {
+    public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment env)
+            throws ExecutionException {
         JavaCommandLineState javaCommandLineState = new JavaCommandLineState(env) {
             private ConsoleView consoleView;
 
             @Override
             protected JavaParameters createJavaParameters() throws ExecutionException {
                 RunConfigurationModule runConfigurationModule = getConfigurationModule();
-                if (runConfigurationModule.getModule() == null) { // on IDEA fresh start, module can't be found in previously saved configuration
+                if (runConfigurationModule.getModule()
+                        == null) { // on IDEA fresh start, module can't be found in previously saved configuration
                     Module module = ModuleUtil.findModuleForFile(getProject().getProjectFile(), getProject());
                     runConfigurationModule.setModule(module);
                     populateFormIfNeeded();
@@ -96,9 +99,11 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                 handler.addProcessListener(new ProcessAdapter() {
                     public void processTerminated(ProcessEvent event) {
                         // TODO: parse result and highlight lines
-                        Optional<File> reportDirectory = directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
+                        Optional<File> reportDirectory =
+                                directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
                         if (reportDirectory.isPresent()) {
-                            String reportLink = "file:///" + reportDirectory.get().getAbsolutePath() + "/index.html";
+                            String reportLink =
+                                    "file:///" + reportDirectory.get().getAbsolutePath() + "/index.html";
                             consoleView.printHyperlink("Open report in browser", new OpenUrlHyperlinkInfo(reportLink));
                         }
                     }
@@ -108,17 +113,20 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
             @NotNull
             @Override
-            public ExecutionResult execute(@NotNull final Executor executor, @NotNull final ProgramRunner runner) throws ExecutionException {
+            public ExecutionResult execute(@NotNull final Executor executor, @NotNull final ProgramRunner runner)
+                    throws ExecutionException {
                 ProcessHandler processHandler = startProcess();
                 ConsoleView console = createConsole(executor);
                 if (console != null) {
                     console.attachToProcess(processHandler);
                 }
                 this.consoleView = console;
-                return new DefaultExecutionResult(console, processHandler, createActions(console, processHandler, executor));
+                return new DefaultExecutionResult(
+                        console, processHandler, createActions(console, processHandler, executor));
             }
         };
-        javaCommandLineState.setConsoleBuilder(TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
+        javaCommandLineState.setConsoleBuilder(
+                TextConsoleBuilderFactory.getInstance().createBuilder(getProject()));
         return javaCommandLineState;
     }
 
@@ -135,14 +143,17 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
 
     private void populateFormIfNeeded() {
         if (formIsEmpty()) {
-            PitCommandLineArgumentsContainer container = defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(getProject());
+            PitCommandLineArgumentsContainer container =
+                    defaultArgumentsContainerFactory.createDefaultPitCommandLineArgumentsContainer(getProject());
             pitConfigurationFormPopulator.populateTextFieldsInForm(pitConfigurationForm, container);
         }
     }
 
     private boolean formIsEmpty() {
-        return isEmpty(pitConfigurationForm.getReportDir()) && isEmpty(pitConfigurationForm.getSourceDir())
-                && isEmpty(pitConfigurationForm.getTargetClasses()) && isEmpty(pitConfigurationForm.getOtherParams());
+        return isEmpty(pitConfigurationForm.getReportDir())
+                && isEmpty(pitConfigurationForm.getSourceDir())
+                && isEmpty(pitConfigurationForm.getTargetClasses())
+                && isEmpty(pitConfigurationForm.getOtherParams());
     }
 
     @Override

@@ -7,9 +7,9 @@ import org.jetbrains.annotations.NotNull
 @CompileStatic
 class GradleProjectDeterminer {
 
-    static final String BUILD_GRADLE_FILE = 'build.gradle'
+	static final String BUILD_GRADLE_FILE = 'build.gradle'
 
-    boolean isGradleProject(@NotNull Project project) {
-        project.baseDir?.findChild(BUILD_GRADLE_FILE) != null
-    }
+	boolean isGradleProject(@NotNull Project project) {
+		project.baseDir?.findChild(BUILD_GRADLE_FILE) != null
+	}
 }

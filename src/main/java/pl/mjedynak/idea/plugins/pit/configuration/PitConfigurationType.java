@@ -9,11 +9,10 @@ import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.util.containers.ContainerUtil;
+import javax.swing.*;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import javax.swing.*;
 
 public class PitConfigurationType implements ConfigurationType {
 
@@ -42,12 +41,10 @@ public class PitConfigurationType implements ConfigurationType {
             }
 
             @Override
-            public @NotNull @NonNls
-            String getId() {
+            public @NotNull @NonNls String getId() {
                 return getName();
             }
         };
-
     }
 
     @Override
@@ -67,7 +64,7 @@ public class PitConfigurationType implements ConfigurationType {
 
     @Override
     public ConfigurationFactory[] getConfigurationFactories() {
-        return new ConfigurationFactory[]{myFactory};
+        return new ConfigurationFactory[] {myFactory};
     }
 
     @Override

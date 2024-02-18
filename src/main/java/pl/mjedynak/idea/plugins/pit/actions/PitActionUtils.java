@@ -4,24 +4,22 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiJavaFile;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class PitActionUtils {
 
-    private PitActionUtils() {
-    }
+    private PitActionUtils() {}
 
-    @NotNull static
-    List<String> getClassNamesForFile(final PsiFile psiFile) {
+    @NotNull
+    static List<String> getClassNamesForFile(final PsiFile psiFile) {
         final List<String> classNames = new ArrayList<String>();
         if (!(psiFile instanceof PsiJavaFile)) {
             return classNames;
         }
 
-        final PsiJavaFile psiJavaFile = (PsiJavaFile)psiFile;
+        final PsiJavaFile psiJavaFile = (PsiJavaFile) psiFile;
         final PsiClass[] classes = psiJavaFile.getClasses();
         for (final PsiClass pc : classes) {
             classNames.add(pc.getQualifiedName());
@@ -29,15 +27,15 @@ public class PitActionUtils {
         return classNames;
     }
 
-    @NotNull static
-    List<String> getClassNamesInDirectory(final PsiDirectory psiDirectory) {
+    @NotNull
+    static List<String> getClassNamesInDirectory(final PsiDirectory psiDirectory) {
         final List<String> classNames = new ArrayList<String>();
         if (psiDirectory == null) {
             return classNames;
         }
 
         final PsiDirectory[] directories = psiDirectory.getSubdirectories();
-        for (final PsiDirectory d: directories) {
+        for (final PsiDirectory d : directories) {
             classNames.addAll(getClassNamesInDirectory(d));
         }
 
@@ -47,5 +45,4 @@ public class PitActionUtils {
         }
         return classNames;
     }
-
 }

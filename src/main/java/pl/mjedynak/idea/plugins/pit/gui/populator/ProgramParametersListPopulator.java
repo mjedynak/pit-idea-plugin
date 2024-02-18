@@ -1,16 +1,17 @@
 package pl.mjedynak.idea.plugins.pit.gui.populator;
 
-import com.intellij.execution.configurations.ParametersList;
-import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
-
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.SOURCE_DIRS;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLASSES;
 import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_TESTS;
 
+import com.intellij.execution.configurations.ParametersList;
+import pl.mjedynak.idea.plugins.pit.gui.PitConfigurationForm;
+
 public class ProgramParametersListPopulator {
 
-    public void populateProgramParametersList(ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
+    public void populateProgramParametersList(
+            ParametersList programParametersList, PitConfigurationForm pitConfigurationForm) {
         addReportDir(programParametersList, pitConfigurationForm);
         addSourceDir(programParametersList, pitConfigurationForm);
         addTargetClasses(programParametersList, pitConfigurationForm);

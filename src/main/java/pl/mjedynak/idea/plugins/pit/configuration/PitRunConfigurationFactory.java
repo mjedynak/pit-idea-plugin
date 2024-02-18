@@ -11,9 +11,12 @@ public class PitRunConfigurationFactory {
     public PitRunConfiguration createConfiguration(Project project) {
         DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(
                 ProjectRootManager.getInstance(project), PsiManager.getInstance(project));
-        DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
-                = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
-        return new PitRunConfiguration("PIT Run Configuration", project, PitConfigurationType.getInstance().getConfigurationFactories()[0],
+        DefaultArgumentsContainerFactory defaultArgumentsContainerFactory =
+                new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator);
+        return new PitRunConfiguration(
+                "PIT Run Configuration",
+                project,
+                PitConfigurationType.getInstance().getConfigurationFactories()[0],
                 defaultArgumentsContainerFactory);
     }
 }

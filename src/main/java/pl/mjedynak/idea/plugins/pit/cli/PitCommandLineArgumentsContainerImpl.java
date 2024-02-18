@@ -1,9 +1,8 @@
 package pl.mjedynak.idea.plugins.pit.cli;
 
-import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument;
 
 public class PitCommandLineArgumentsContainerImpl implements PitCommandLineArgumentsContainer {
 

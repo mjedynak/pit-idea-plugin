@@ -8,17 +8,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
+import java.util.List;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
-
-import java.util.List;
 
 public abstract class DirectoryOrFilePitAction extends PitAction {
 
     abstract String getTitleForItem(final String item);
 
-    abstract boolean isEnabled(@NotNull final Project project, @NotNull final Module module,
-                               @NotNull final VirtualFile vfile);
+    abstract boolean isEnabled(
+            @NotNull final Project project, @NotNull final Module module, @NotNull final VirtualFile vfile);
 
     @Override
     public void update(@NotNull final AnActionEvent e) {
@@ -26,8 +25,8 @@ public abstract class DirectoryOrFilePitAction extends PitAction {
         final Module module = e.getData(DataKeys.MODULE);
         final VirtualFile vfile = e.getData(DataKeys.VIRTUAL_FILE);
 
-        final boolean enabled = (project != null) && (module != null) && (vfile != null)
-                && isEnabled(project, module, vfile);
+        final boolean enabled =
+                (project != null) && (module != null) && (vfile != null) && isEnabled(project, module, vfile);
 
         e.getPresentation().setEnabledAndVisible(enabled);
         if (enabled) {
@@ -35,10 +34,8 @@ public abstract class DirectoryOrFilePitAction extends PitAction {
         }
     }
 
-    abstract PitRunConfiguration makeConfigurationForClassList(@NotNull final String classList,
-                                                               @NotNull final Project project,
-                                                               @NotNull final String title);
-
+    abstract PitRunConfiguration makeConfigurationForClassList(
+            @NotNull final String classList, @NotNull final Project project, @NotNull final String title);
 
     @Override
     protected PitRunConfiguration getConfigurationForActionEvent(final AnActionEvent e) {
@@ -67,5 +64,4 @@ public abstract class DirectoryOrFilePitAction extends PitAction {
 
         return makeConfigurationForClassList(joinedString, project, vfile.getPresentableName());
     }
-
 }

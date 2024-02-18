@@ -1,6 +1,7 @@
 package pl.mjedynak.idea.plugins.pit.actions;
 
-import com.intellij.openapi.fileTypes.FileType;
+import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_TESTS;
+
 import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -14,17 +15,14 @@ import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulat
 import pl.mjedynak.idea.plugins.pit.configuration.PitConfigurationType;
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration;
 
-import static pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_TESTS;
-
 /**
  * Runs pitest filtered to a directory of test files
  */
 public class RunSomeTestsPitAction extends DirectoryOrFilePitAction {
 
-    boolean isEnabled(@NotNull final Project project, @NotNull final Module module,
-                               @NotNull final VirtualFile vfile) {
-        return (vfile.isDirectory() || (vfile.getFileType() == StdFileTypes.JAVA)) &&
-                module.getModuleTestsWithDependentsScope().contains(vfile);
+    boolean isEnabled(@NotNull final Project project, @NotNull final Module module, @NotNull final VirtualFile vfile) {
+        return (vfile.isDirectory() || (vfile.getFileType() == StdFileTypes.JAVA))
+                && module.getModuleTestsWithDependentsScope().contains(vfile);
     }
 
     @Override
@@ -33,24 +31,28 @@ public class RunSomeTestsPitAction extends DirectoryOrFilePitAction {
     }
 
     @Override
-    PitRunConfiguration makeConfigurationForClassList(@NotNull final String classList, @NotNull final Project project, @NotNull final String title) {
-        final DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator = new DefaultArgumentsContainerPopulator(
-                ProjectRootManager.getInstance(project), PsiManager.getInstance(project));
+    PitRunConfiguration makeConfigurationForClassList(
+            @NotNull final String classList, @NotNull final Project project, @NotNull final String title) {
+        final DefaultArgumentsContainerPopulator defaultArgumentsContainerPopulator =
+                new DefaultArgumentsContainerPopulator(
+                        ProjectRootManager.getInstance(project), PsiManager.getInstance(project));
 
-        final DefaultArgumentsContainerFactory defaultArgumentsContainerFactory
-                = new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator) {
-            @Override
-            public PitCommandLineArgumentsContainer createDefaultPitCommandLineArgumentsContainer(final Project proj) {
-                final PitCommandLineArgumentsContainer container = super.createDefaultPitCommandLineArgumentsContainer(proj);
-                container.put(TARGET_TESTS, classList);
-                return container;
-            }
-        };
+        final DefaultArgumentsContainerFactory defaultArgumentsContainerFactory =
+                new DefaultArgumentsContainerFactory(defaultArgumentsContainerPopulator) {
+                    @Override
+                    public PitCommandLineArgumentsContainer createDefaultPitCommandLineArgumentsContainer(
+                            final Project proj) {
+                        final PitCommandLineArgumentsContainer container =
+                                super.createDefaultPitCommandLineArgumentsContainer(proj);
+                        container.put(TARGET_TESTS, classList);
+                        return container;
+                    }
+                };
 
-        return new PitRunConfiguration("PIT using tests in " + title, project,
+        return new PitRunConfiguration(
+                "PIT using tests in " + title,
+                project,
                 PitConfigurationType.getInstance().getConfigurationFactories()[0],
                 defaultArgumentsContainerFactory);
-
     }
-
 }
