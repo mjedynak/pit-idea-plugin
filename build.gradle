@@ -1,17 +1,17 @@
 plugins {
 	id 'groovy'
-	id 'org.jetbrains.intellij' version '1.17.1'
+	id 'org.jetbrains.intellij' version '1.17.4'
 	id 'com.diffplug.spotless' version '6.25.0'
 }
 
 intellij {
-	version = '2023.3'
+	version = '2024.3'
 	plugins = ['java']
 }
 
 
-ext.pitVersion = '1.15.8'
-ext.pitJunit5PluginVersion = '1.2.1'
+ext.pitVersion = '1.20.0'
+ext.pitJunit5PluginVersion = '1.2.3'
 
 sourceCompatibility = 17
 targetCompatibility = 17
@@ -33,6 +33,7 @@ dependencies {
 	implementation("org.pitest:pitest:$pitVersion") { transitive = false }
 	implementation "org.pitest:pitest-junit5-plugin:$pitJunit5PluginVersion"
 	implementation 'org.apache.commons:commons-text:1.10.0'
+	implementation('org.junit.platform:junit-platform-launcher:1.9.2') { transitive = false }
 	compileOnly 'org.codehaus.groovy:groovy-all:3.0.19'
 	testCompileOnly 'org.codehaus.groovy:groovy-all:3.0.19'
 	testImplementation('org.spockframework:spock-core:2.3-groovy-3.0') {

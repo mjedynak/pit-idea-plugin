@@ -4,16 +4,21 @@
     <description><![CDATA[
         IntelliJ IDEA plugin for PIT Mutation Testing (pitest.org).
         <br/>
-        Bundled with PIT 1.15.8 and JUnit5 plugin 1.2.1
+        Bundled with PIT 1.20.0 and JUnit5 plugin 1.2.3
         <br/><br/>
         Adds a 'Run configuration' that allows to execute PIT within IDE.
         <br/><br/>
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.10</version>
+    <version>1.4.11</version>
     <change-notes>
         <![CDATA[
+           version 1.4.11
+           <br/>
+           <ul>
+           <li>Upgrade PIT version to 1.20.0 and JUnit5 plugin to 1.2.3</li>
+           </ul>
            version 1.4.10
            <br/>
            <ul>
