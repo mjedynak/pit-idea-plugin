@@ -3,6 +3,7 @@
 *.iws
 .idea
 .idea/*
+.intellijPlatform
 .gradle/*
 build/*
 out/*

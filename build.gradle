@@ -1,20 +1,16 @@
 plugins {
 	id 'groovy'
-	id 'org.jetbrains.intellij' version '1.17.4'
-	id 'com.diffplug.spotless' version '6.25.0'
+	id 'org.jetbrains.intellij.platform' version '2.18.1'
+	id 'com.diffplug.spotless' version '8.8.0'
 }
-
-intellij {
-	version = '2024.3'
-	plugins = ['java']
-}
-
 
 ext.pitVersion = '1.20.0'
 ext.pitJunit5PluginVersion = '1.2.3'
 
-sourceCompatibility = 17
-targetCompatibility = 17
+java {
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
 
 
 // workaround for http://issues.gradle.org/browse/GRADLE-2538
@@ -24,10 +20,18 @@ sourceSets.main.groovy.srcDir 'src/main/java'
 repositories {
 	mavenCentral()
 	mavenLocal()
+	intellijPlatform {
+		defaultRepositories()
+	}
 }
 
 
 dependencies {
+	intellijPlatform {
+		intellijIdea('2024.3')
+		bundledPlugin('com.intellij.java')
+		testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform.INSTANCE)
+	}
 	implementation("org.pitest:pitest-command-line:$pitVersion") { transitive = false }
 	implementation("org.pitest:pitest-entry:$pitVersion") { transitive = false }
 	implementation("org.pitest:pitest:$pitVersion") { transitive = false }
@@ -39,6 +43,9 @@ dependencies {
 	testImplementation('org.spockframework:spock-core:2.3-groovy-3.0') {
 		exclude group: 'org.codehaus.groovy'
 	}
+	testImplementation 'junit:junit:4.13.2'
+	testImplementation 'net.bytebuddy:byte-buddy:1.14.11'
+	testImplementation 'org.objenesis:objenesis:3.3'
 }
 
 jar {
@@ -50,8 +57,18 @@ jar {
 	}
 }
 
+test {
+	useJUnitPlatform()
+}
+
+tasks.named('prepareTestSandbox') {
+	exclude('**/spock-core*')
+	exclude('**/spock*')
+	exclude('**/testFramework*')
+}
+
 wrapper {
-	gradleVersion "8.6"
+	gradleVersion "9.6.1"
 }
 
 spotless {
