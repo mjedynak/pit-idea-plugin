@@ -102,8 +102,11 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                         Optional<File> reportDirectory =
                                 directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
                         if (reportDirectory.isPresent()) {
-                            String reportLink =
-                                    "file:///" + reportDirectory.get().getAbsolutePath() + "/index.html";
+                            String reportLink = reportDirectory
+                                    .get()
+                                    .toURI()
+                                    .resolve("index.html")
+                                    .toString();
                             consoleView.printHyperlink("Open report in browser", new OpenUrlHyperlinkInfo(reportLink));
                         }
                     }
