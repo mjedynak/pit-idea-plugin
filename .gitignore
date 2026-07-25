@@ -4,6 +4,7 @@
 .idea
 .idea/*
 .intellijPlatform
+.kotlin/*
 .gradle/*
 build/*
 out/*
