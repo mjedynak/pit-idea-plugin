@@ -9,20 +9,20 @@ import java.io.File
 class ClassPathPopulatorTest {
     @Test
     fun `should have the same PIT version as specified in build gradle`() {
-        val gradleBuildFile = File("build.gradle")
-        val lineWithVersion = gradleBuildFile.readLines().first { it.startsWith("ext.pitVersion") }
-        val version = lineWithVersion.substringAfter("'").substringBeforeLast("'")
+        val gradleBuildFile = File("build.gradle.kts")
+        val lineWithVersion = gradleBuildFile.readLines().first { it.startsWith("val pitVersion") }
+        val version = lineWithVersion.substringAfter("\"").substringBeforeLast("\"")
 
-        assertEquals(version, PITEST_VERSION)
+        assertEquals(PITEST_VERSION, version)
     }
 
     @Test
     fun `should have the same PIT Junit5 Plugin version as specified in build gradle`() {
-        val gradleBuildFile = File("build.gradle")
+        val gradleBuildFile = File("build.gradle.kts")
         val lineWithVersion =
-            gradleBuildFile.readLines().first { it.startsWith("ext.pitJunit5PluginVersion") }
-        val version = lineWithVersion.substringAfter("'").substringBeforeLast("'")
+            gradleBuildFile.readLines().first { it.startsWith("val pitJunit5PluginVersion") }
+        val version = lineWithVersion.substringAfter("\"").substringBeforeLast("\"")
 
-        assertEquals(version, PITEST_JUNIT5_PLUGIN_VERSION)
+        assertEquals(PITEST_JUNIT5_PLUGIN_VERSION, version)
     }
 }
