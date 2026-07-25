@@ -11,9 +11,14 @@
         <b>Usage:</b> Run->Edit Configurations->Defaults->Pit Runner
         <br/><br/>
       ]]></description>
-    <version>1.4.12-SNAPSHOT</version>
+    <version>1.4.12</version>
     <change-notes>
         <![CDATA[
+           version 1.4.12
+           <br/>
+           <ul>
+           <li>Upgrade PIT version to 1.25.8</li>
+           </ul>
            version 1.4.11
            <br/>
            <ul>
