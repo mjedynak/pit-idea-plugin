@@ -33,14 +33,14 @@ dependencies {
         intellijIdea("2026.2")
         bundledPlugin("com.intellij.java")
     }
-    // -- pitest dependencies
+    // -- pitest dependencies marker
     implementation("org.pitest:pitest-command-line:$pitVersion") { isTransitive = false }
     implementation("org.pitest:pitest-entry:$pitVersion") { isTransitive = false }
     implementation("org.pitest:pitest:$pitVersion") { isTransitive = false }
     implementation("org.pitest:pitest-junit5-plugin:$pitJunit5PluginVersion")
     implementation("org.apache.commons:commons-text:1.14.0")
     implementation("org.junit.platform:junit-platform-launcher:6.1.1") { isTransitive = false }
-    // -- pitest dependencies
+    // -- pitest dependencies marker
 
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
