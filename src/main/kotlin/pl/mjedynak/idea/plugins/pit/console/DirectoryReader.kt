@@ -1,12 +1,12 @@
 package pl.mjedynak.idea.plugins.pit.console
 
-import com.google.common.base.Optional
 import java.io.File
+import java.util.Optional
 
 class DirectoryReader {
     fun getLatestDirectoryFrom(parentDir: File): Optional<File> {
         if (!parentDir.isDirectory) {
-            return Optional.absent()
+            return Optional.empty()
         }
         val files =
             parentDir
@@ -17,7 +17,7 @@ class DirectoryReader {
         return if (files.isNotEmpty()) {
             Optional.of(files.last())
         } else {
-            Optional.absent()
+            Optional.empty()
         }
     }
 }

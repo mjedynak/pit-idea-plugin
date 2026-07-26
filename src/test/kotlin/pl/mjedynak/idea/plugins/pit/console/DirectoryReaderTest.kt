@@ -1,9 +1,9 @@
 package pl.mjedynak.idea.plugins.pit.console
 
-import com.google.common.base.Optional
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 import java.io.File
+import java.util.Optional
 import kotlin.io.path.createTempDirectory
 
 class DirectoryReaderTest {

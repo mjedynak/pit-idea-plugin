@@ -2,7 +2,6 @@ package pl.mjedynak.idea.plugins.pit.configuration;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
-import com.google.common.base.Optional;
 import com.intellij.execution.DefaultExecutionResult;
 import com.intellij.execution.ExecutionBundle;
 import com.intellij.execution.ExecutionException;
@@ -38,6 +37,7 @@ import com.intellij.psi.search.GlobalSearchScope;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import pl.mjedynak.idea.plugins.pit.JavaParametersCreator;
