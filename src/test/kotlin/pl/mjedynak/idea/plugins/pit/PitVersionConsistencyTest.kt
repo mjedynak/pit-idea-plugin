@@ -4,9 +4,10 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.File
 
-class ClassPathPopulatorTest {
+class PitVersionConsistencyTest {
     private val gradleLines = File("build.gradle.kts").readLines()
     private val populatorSource = File("src/main/kotlin/pl/mjedynak/idea/plugins/pit/ClassPathPopulator.kt").readText()
+    private val pluginXml = File("META-INF/plugin.xml").readText()
 
     @Test
     fun `should have all pitest dependencies from build gradle in classpath populator`() {
@@ -16,6 +17,29 @@ class ClassPathPopulatorTest {
             assertArtifactIsReferenced(artifactId)
             assertVersionIsPresent(artifactId, version)
         }
+    }
+
+    @Test
+    fun `should have pit versions in plugin xml matching build gradle`() {
+        val markers = findPitestDependencyMarkers()
+        val variables = parseVariablesBefore(markers.first())
+        val pitVersion = variables["pitVersion"] ?: error("pitVersion not found in build.gradle.kts")
+        val pitJunit5PluginVersion = variables["pitJunit5PluginVersion"] ?: error("pitJunit5PluginVersion not found in build.gradle.kts")
+
+        assertTrue(
+            pluginXml.contains("PIT $pitVersion"),
+            "plugin.xml should contain PIT version '$pitVersion' but doesn't. Description: ${pluginXml.substringAfter(
+                "<description>",
+                "",
+            ).substringBefore("</description>")}",
+        )
+        assertTrue(
+            pluginXml.contains("JUnit5 plugin $pitJunit5PluginVersion"),
+            "plugin.xml should contain JUnit5 plugin version '$pitJunit5PluginVersion' but doesn't. Description: ${pluginXml.substringAfter(
+                "<description>",
+                "",
+            ).substringBefore("</description>")}",
+        )
     }
 
     private fun extractPitestDependencies(): List<Pair<String, String>> {

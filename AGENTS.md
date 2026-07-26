@@ -107,7 +107,7 @@ PitRunConfiguration (ModuleBasedConfiguration)
 | `ClassPathPopulator.kt` | JAR filename strings | 1.25.8 / 1.2.3 |
 | `META-INF/plugin.xml` | Description text ("Bundled with PIT ...") | 1.25.8         |
 
-`ClassPathPopulatorTest` enforces consistency between `build.gradle.kts` and `ClassPathPopulator.kt` — it parses the build file and asserts the versions match. It does NOT check `plugin.xml`.
+`PitVersionConsistencyTest` enforces consistency between `build.gradle.kts`, `ClassPathPopulator.kt`, and `META-INF/plugin.xml` — it parses the build file and asserts the versions match in all locations.
 
 ## Common Tasks
 
@@ -128,7 +128,7 @@ PitRunConfiguration (ModuleBasedConfiguration)
 1. Update `val pitVersion` in `build.gradle.kts`
 2. Update JAR filenames in `ClassPathPopulator.kt`
 3. Update `META-INF/plugin.xml` description
-4. Run `./gradlew test` — `ClassPathPopulatorTest` will catch build.gradle/classpath mismatches
+4. Run `./gradlew test` — `PitVersionConsistencyTest` will catch build.gradle/classpath mismatches
 
 ## Key Gotchas
 
