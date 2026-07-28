@@ -45,7 +45,7 @@ repositories {
     }
 }
 
-val integrationTestImplementation by configurations.getting {
+val integrationTestImplementation = configurations.getByName("integrationTestImplementation") {
     extendsFrom(configurations.testImplementation.get())
 }
 
@@ -95,7 +95,7 @@ tasks.test {
 val testProjectDir = layout.buildDirectory.dir("testProject").get().asFile
 val testProjectSourceDir = file("src/integrationTest/resources/testProject")
 
-val setupTestProject by tasks.registering(Copy::class) {
+val setupTestProject = tasks.register<Copy>("setupTestProject") {
     from(testProjectSourceDir)
     from(rootDir) {
         include("gradlew")
@@ -105,14 +105,14 @@ val setupTestProject by tasks.registering(Copy::class) {
     into(testProjectDir)
 }
 
-val compileTestProject by tasks.registering(Exec::class) {
+val compileTestProject = tasks.register<Exec>("compileTestProject") {
     dependsOn(setupTestProject)
     workingDir = testProjectDir
     val gradleCmd = if (System.getProperty("os.name").lowercase().contains("windows")) "gradlew.bat" else "./gradlew"
     commandLine(gradleCmd, "classes", "testClasses", "--no-daemon")
 }
 
-val integrationTest by intellijPlatformTesting.testIdeUi.registering {
+val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTest") {
     task {
         dependsOn(compileTestProject)
         val integrationTestSourceSet = sourceSets.getByName("integrationTest")
