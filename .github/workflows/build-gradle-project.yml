@@ -17,4 +17,4 @@ jobs:
           java-version: 25
 
       - name: Execute Gradle build
-        run: ./gradlew build
+        run: ./gradlew build integrationTest

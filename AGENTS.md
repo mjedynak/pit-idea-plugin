@@ -11,6 +11,7 @@ IntelliJ IDEA plugin for [PIT Mutation Testing](http://pitest.org). Adds a run c
 ```bash
 ./gradlew build          # Full build (compile + test + format check)
 ./gradlew test           # Run unit tests only
+./gradlew integrationTest # Run integration tests (starts real IDE with plugin)
 ./gradlew spotlessApply  # Auto-format code (Java + Kotlin)
 ./gradlew spotlessCheck  # Check formatting without modifying
 ```
@@ -26,8 +27,10 @@ src/main/java/pl/mjedynak/idea/plugins/pit/
 │   ├── model/        # PitCommandLineArgument enum
 │   └── factory/      # DefaultArgumentsContainerFactory
 ├── configuration/    # Run configuration (PitRunConfiguration, PitConfigurationType)
-└── gui/              # Settings editor form + populators
-    └── populator/    # Form <-> CLI argument mapping
+├── gui/              # Settings editor form + populators
+│   └── populator/    # Form <-> CLI argument mapping
+└── PitOutputReader.java  # Reads PIT process info via reflection for integration tests
+└── PitTestHelper.java  # E2E test helper (runs PIT in-forked-JVM for integration tests)
 
 src/main/kotlin/pl/mjedynak/idea/plugins/pit/
 ├── JavaParametersCreator.kt       # Builds JavaParameters for PIT execution
@@ -40,7 +43,11 @@ src/main/kotlin/pl/mjedynak/idea/plugins/pit/
 │   └── MavenPomReader.kt
 └── cli/factory/DefaultArgumentsContainerPopulator.kt  # Default arg population
 
-src/test/kotlin/                   # All tests are Kotlin (9 test files)
+src/test/kotlin/                   # All tests are Kotlin (8 test files)
+src/integrationTest/
+├── kotlin/                        # Integration tests using IntelliJ Starter framework
+│   └── PitPluginIntegrationTest.kt  # 4 tests: plugin load, actions, config type, E2E PIT execution
+└── resources/testProject/         # Test project with Calculator.java, CalculatorTest.java
 META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 ```
 
@@ -62,9 +69,11 @@ META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 
 ## Testing
 
-- All tests in `src/test/kotlin/`
-- Run with: `./gradlew test`
+- Unit tests in `src/test/kotlin/` — run with: `./gradlew test`
+- Integration tests in `src/integrationTest/kotlin/` — run with: `./gradlew integrationTest`
 - `ClassPathPopulatorTest` is a meta-test: parses `build.gradle.kts` to verify `ClassPathPopulator.kt` references correct PIT versions (prevents version drift)
+- **Integration test approach**: Uses IntelliJ Starter framework (`testIdeUi`) to start a real separate IDE process with the plugin installed. Communication via `@Remote` stubs over JMX. `PitTestHelper.java` (in plugin main source) is invoked remotely — it builds the classpath and PIT command directly, then starts PIT as a forked JVM process. This bypasses IntelliJ's unreliable module root resolution in test environments.
+- **Integration test setup**: `setupTestProject` copies test project sources + Gradle wrapper to `build/testProject/`. `compileTestProject` then runs `./gradlew classes testClasses` to pre-compile sources (with JUnit resolved from Maven Central). The `integrationTest` task depends on `buildPlugin`, `setupTestProject`, and `compileTestProject`.
 
 ## Architecture
 
@@ -134,4 +143,28 @@ PitRunConfiguration (ModuleBasedConfiguration)
 
 - **`ClassPathPopulator.kt`** hardcodes JAR filenames including version numbers — changing `build.gradle.kts` without updating this file will cause runtime classpath errors
 - **`PitConfigurationForm.resetEditorFrom()`/`applyEditorTo()` are empty** — form fields are read directly at execution time, not through the standard SettingsEditor contract
+
+## Integration Test Troubleshooting
+
+### Test Project Model
+- Test project (`src/integrationTest/resources/testProject/`) is a Gradle project. The test IDE imports it via Gradle wrapper (not manual `.idea/` XML files).
+- The `build.gradle.kts` JUnit version MUST match the plugin's bundled `junit-platform-launcher` version. Currently both are `6.1.1`. A mismatch (e.g., `5.11.1` in test project + `6.1.1` launcher) causes PIT to fail silently with `"Pitest could not run any tests"` because the launcher and engine versions are incompatible.
+
+### Debugging PIT failures
+- PIT runs as a forked JVM via `PitRunConfiguration.startProcess()`. If the process exits before a `ProcessAdapter` is registered (because `super.startProcess()` starts the process), the listener misses `onTextAvailable` events. **Fix**: create the `ColoredProcessHandler` directly, attach listeners, then call `startNotify()`:
+  ```java
+  ColoredProcessHandler handler = new ColoredProcessHandler(commandLine);
+  handler.addProcessListener(new ProcessAdapter() { ... });
+  handler.startNotify();
+  ```
+- To capture PIT output for debugging, run the exact command line from the test report directly in a terminal (extract from `PIT output: Command line:` in the HTML report). This bypasses IntelliJ and shows PIT's actual error messages.
+
+### Key Integration Test Files
+- `PitOutputReader.java` — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
+- `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitOutputReader` inside the test IDE over JMX.
+- `PitTestHelper.java` Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
+
+### PIT HTML Report Structure
+PIT creates a timestamped subdirectory for each run (e.g., `report/20260728.../index.html`). The `DirectoryReader` resolves the latest directory. Tests should walk the report tree to find `index.html`, not assume it's directly in the report dir.`
+
 

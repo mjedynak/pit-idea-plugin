@@ -9,6 +9,7 @@ import com.intellij.execution.ExecutionResult;
 import com.intellij.execution.Executor;
 import com.intellij.execution.JavaRunConfigurationExtensionManager;
 import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.JavaCommandLineState;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.configurations.JavaRunConfigurationModule;
@@ -17,10 +18,12 @@ import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.execution.configurations.RunConfigurationModule;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.filters.TextConsoleBuilderFactory;
+import com.intellij.execution.process.ColoredProcessHandler;
 import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.process.ProcessAdapter;
 import com.intellij.execution.process.ProcessEvent;
 import com.intellij.execution.process.ProcessHandler;
+import com.intellij.execution.process.ProcessTerminatedListener;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
@@ -95,10 +98,25 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
             @NotNull
             @Override
             protected OSProcessHandler startProcess() throws ExecutionException {
-                OSProcessHandler handler = super.startProcess();
+                GeneralCommandLine commandLine = createCommandLine();
+                ColoredProcessHandler handler = new ColoredProcessHandler(commandLine);
+                StringBuilder outputBuilder = new StringBuilder();
                 handler.addProcessListener(new ProcessAdapter() {
+                    public void onTextAvailable(ProcessEvent event) {
+                        String text = event.getText();
+                        if (text != null) {
+                            outputBuilder.append(text);
+                        }
+                    }
+
                     public void processTerminated(ProcessEvent event) {
-                        // TODO: parse result and highlight lines
+                        try {
+                            String reportDir = pitConfigurationForm.getReportDir();
+                            File outputFile = new File(reportDir, "pit-output.log");
+                            outputFile.getParentFile().mkdirs();
+                            java.nio.file.Files.writeString(outputFile.toPath(), outputBuilder.toString());
+                        } catch (Exception ignored) {
+                        }
                         Optional<File> reportDirectory =
                                 directoryReader.getLatestDirectoryFrom(new File(pitConfigurationForm.getReportDir()));
                         if (reportDirectory.isPresent()) {
@@ -111,6 +129,8 @@ public class PitRunConfiguration extends ModuleBasedConfiguration implements Run
                         }
                     }
                 });
+                ProcessTerminatedListener.attach(handler);
+                handler.startNotify();
                 return handler;
             }
 
