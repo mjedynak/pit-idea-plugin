@@ -8,20 +8,20 @@ class PitCommandLineArgumentTest {
     fun `report dir argument is mapped`() {
         val pitCommandLineArgument = PitCommandLineArgument.REPORT_DIR
 
-        assertEquals("--reportDir", pitCommandLineArgument.getName())
+        assertEquals("--reportDir", pitCommandLineArgument.argumentName)
     }
 
     @Test
     fun `source dirs argument is mapped`() {
         val pitCommandLineArgument = PitCommandLineArgument.SOURCE_DIRS
 
-        assertEquals("--sourceDirs", pitCommandLineArgument.getName())
+        assertEquals("--sourceDirs", pitCommandLineArgument.argumentName)
     }
 
     @Test
     fun `target classes argument is mapped`() {
         val pitCommandLineArgument = PitCommandLineArgument.TARGET_CLASSES
 
-        assertEquals("--targetClasses", pitCommandLineArgument.getName())
+        assertEquals("--targetClasses", pitCommandLineArgument.argumentName)
     }
 }

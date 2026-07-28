@@ -10,18 +10,10 @@ plugins {
 val pitVersion = "1.25.8"
 val pitJunit5PluginVersion = "1.2.3"
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-}
-
 kotlin {
     jvmToolchain(25)
 }
 
-sourceSets.main {
-    java.srcDirs("src/main/java")
-}
 
 sourceSets {
     create("integrationTest") {
@@ -50,11 +42,6 @@ val integrationTestImplementation = configurations.getByName("integrationTestImp
 }
 
 dependencies {
-    intellijPlatform {
-        intellijIdea("2026.2")
-        bundledPlugin("com.intellij.java")
-        testFramework(TestFrameworkType.Platform)
-    }
     // -- pitest dependencies marker
     implementation("org.pitest:pitest-command-line:$pitVersion") { isTransitive = false }
     implementation("org.pitest:pitest-entry:$pitVersion") { isTransitive = false }
@@ -70,6 +57,9 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.23.0")
 
     intellijPlatform {
+        intellijIdea("2026.2")
+        bundledPlugin("com.intellij.java")
+        testFramework(TestFrameworkType.Platform)
         testFramework(TestFrameworkType.Starter, configurationName = "integrationTestImplementation")
     }
     integrationTestImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
@@ -128,9 +118,6 @@ tasks.wrapper {
 }
 
 spotless {
-    java {
-        palantirJavaFormat()
-    }
     kotlin {
         ktlint()
     }

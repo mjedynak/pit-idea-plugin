@@ -12,11 +12,11 @@ class PitRunConfigurationStorer {
         pitConfigurationForm: PitConfigurationForm,
         element: Element,
     ) {
-        pitConfigurationForm.reportDir = element.getAttribute(REPORT_DIR.toString())?.value
-        pitConfigurationForm.sourceDir = element.getAttribute(SOURCE_DIRS.toString())?.value
-        pitConfigurationForm.targetClasses = element.getAttribute(TARGET_CLASSES.toString())?.value
-        pitConfigurationForm.targetTests = element.getAttribute(TARGET_TESTS.toString())?.value
-        pitConfigurationForm.otherParams = element.getAttribute(OTHER_PARAMS)?.value
+        pitConfigurationForm.reportDir = element.getAttribute(REPORT_DIR.toString())?.value ?: ""
+        pitConfigurationForm.sourceDir = element.getAttribute(SOURCE_DIRS.toString())?.value ?: ""
+        pitConfigurationForm.targetClasses = element.getAttribute(TARGET_CLASSES.toString())?.value ?: ""
+        pitConfigurationForm.targetTests = element.getAttribute(TARGET_TESTS.toString())?.value ?: ""
+        pitConfigurationForm.otherParams = element.getAttribute(OTHER_PARAMS)?.value ?: ""
     }
 
     fun writeExternal(
