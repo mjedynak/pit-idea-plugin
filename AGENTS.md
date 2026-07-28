@@ -41,9 +41,9 @@ src/main/kotlin/pl/mjedynak/idea/plugins/pit/
 │   └── MavenPomReader.kt
 └── cli/factory/DefaultArgumentsContainerPopulator.kt  # Default arg population
 
-src/testSupport/java/pl/mjedynak/idea/plugins/pit/
-├── PitTestHelper.java           # E2E test helper (runs PIT in forked JVM)
-└── PitOutputReader.java         # Reads PIT process info via reflection
+src/testSupport/kotlin/pl/mjedynak/idea/plugins/pit/
+├── PitTestHelper.kt           # E2E test helper (runs PIT in forked JVM)
+└── PitOutputReader.kt         # Reads PIT process info via reflection
 src/test/kotlin/                   # All tests are Kotlin (8 test files)
 src/integrationTest/
 ├── kotlin/                        # Integration tests using IntelliJ Starter framework
@@ -161,8 +161,8 @@ PitRunConfiguration (ModuleBasedConfiguration)
 - To capture PIT output for debugging, run the exact command line from the test report directly in a terminal (extract from `PIT output: Command line:` in the HTML report). This bypasses IntelliJ and shows PIT's actual error messages.
 
 ### Key Integration Test Files
-- `PitTestHelper.java` (in `src/testSupport/`) — Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
-- `PitOutputReader.java` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
+- `PitTestHelper.kt` (in `src/testSupport/`) — Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
+- `PitOutputReader.kt` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
 - `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitOutputReader` inside the test IDE over JMX.
 
 ### PIT HTML Report Structure

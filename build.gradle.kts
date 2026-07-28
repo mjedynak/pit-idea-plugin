@@ -29,7 +29,7 @@ sourceSets {
         runtimeClasspath += sourceSets.main.get().output
     }
     create("testSupport") {
-        java.srcDirs("src/testSupport/java")
+        kotlin.srcDirs("src/testSupport/kotlin")
         compileClasspath += sourceSets.main.get().output
         runtimeClasspath += sourceSets.main.get().output
         compileClasspath += sourceSets.main.get().compileClasspath
