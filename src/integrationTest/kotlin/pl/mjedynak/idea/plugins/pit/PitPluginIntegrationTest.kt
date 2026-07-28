@@ -52,6 +52,9 @@ class PitPluginIntegrationTest {
                 ),
             ).apply {
                 pluginConfigurator.installPluginFromPath(pluginPath)
+                internalMode(true)
+                disableUltimateModule()
+                removeMigrateConfigAndCreateStubFile()
             }.runIdeWithDriver()
             .useDriverAndCloseIde {
                 waitForIndicators(3.minutes)
