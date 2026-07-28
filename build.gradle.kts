@@ -28,6 +28,13 @@ sourceSets {
         compileClasspath += sourceSets.main.get().output
         runtimeClasspath += sourceSets.main.get().output
     }
+    create("testSupport") {
+        java.srcDirs("src/testSupport/java")
+        compileClasspath += sourceSets.main.get().output
+        runtimeClasspath += sourceSets.main.get().output
+        compileClasspath += sourceSets.main.get().compileClasspath
+        runtimeClasspath += sourceSets.main.get().runtimeClasspath
+    }
 }
 
 repositories {
@@ -72,6 +79,7 @@ dependencies {
 }
 
 tasks.jar {
+    from(sourceSets["testSupport"].output)
     metaInf {
         from("META-INF") {
             include("plugin.xml")

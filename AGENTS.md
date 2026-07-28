@@ -29,8 +29,6 @@ src/main/java/pl/mjedynak/idea/plugins/pit/
 ├── configuration/    # Run configuration (PitRunConfiguration, PitConfigurationType)
 ├── gui/              # Settings editor form + populators
 │   └── populator/    # Form <-> CLI argument mapping
-└── PitOutputReader.java  # Reads PIT process info via reflection for integration tests
-└── PitTestHelper.java  # E2E test helper (runs PIT in-forked-JVM for integration tests)
 
 src/main/kotlin/pl/mjedynak/idea/plugins/pit/
 ├── JavaParametersCreator.kt       # Builds JavaParameters for PIT execution
@@ -43,6 +41,9 @@ src/main/kotlin/pl/mjedynak/idea/plugins/pit/
 │   └── MavenPomReader.kt
 └── cli/factory/DefaultArgumentsContainerPopulator.kt  # Default arg population
 
+src/testSupport/java/pl/mjedynak/idea/plugins/pit/
+├── PitTestHelper.java           # E2E test helper (runs PIT in forked JVM)
+└── PitOutputReader.java         # Reads PIT process info via reflection
 src/test/kotlin/                   # All tests are Kotlin (8 test files)
 src/integrationTest/
 ├── kotlin/                        # Integration tests using IntelliJ Starter framework
@@ -72,7 +73,7 @@ META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 - Unit tests in `src/test/kotlin/` — run with: `./gradlew test`
 - Integration tests in `src/integrationTest/kotlin/` — run with: `./gradlew integrationTest`
 - `ClassPathPopulatorTest` is a meta-test: parses `build.gradle.kts` to verify `ClassPathPopulator.kt` references correct PIT versions (prevents version drift)
-- **Integration test approach**: Uses IntelliJ Starter framework (`testIdeUi`) to start a real separate IDE process with the plugin installed. Communication via `@Remote` stubs over JMX. `PitTestHelper.java` (in plugin main source) is invoked remotely — it builds the classpath and PIT command directly, then starts PIT as a forked JVM process. This bypasses IntelliJ's unreliable module root resolution in test environments.
+- **Integration test approach**: Uses IntelliJ Starter framework (`testIdeUi`) to start a real separate IDE process with the plugin installed. Communication via `@Remote` stubs over JMX. `PitTestHelper.java` (in `src/testSupport/`, bundled in the plugin JAR) is invoked remotely — it builds the classpath and PIT command directly, then starts PIT as a forked JVM process. This bypasses IntelliJ's unreliable module root resolution in test environments.
 - **Integration test setup**: `setupTestProject` copies test project sources + Gradle wrapper to `build/testProject/`. `compileTestProject` then runs `./gradlew classes testClasses` to pre-compile sources (with JUnit resolved from Maven Central). The `integrationTest` task depends on `buildPlugin`, `setupTestProject`, and `compileTestProject`.
 
 ## Architecture
@@ -160,9 +161,9 @@ PitRunConfiguration (ModuleBasedConfiguration)
 - To capture PIT output for debugging, run the exact command line from the test report directly in a terminal (extract from `PIT output: Command line:` in the HTML report). This bypasses IntelliJ and shows PIT's actual error messages.
 
 ### Key Integration Test Files
-- `PitOutputReader.java` — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
+- `PitTestHelper.java` (in `src/testSupport/`) — Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
+- `PitOutputReader.java` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
 - `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitOutputReader` inside the test IDE over JMX.
-- `PitTestHelper.java` Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
 
 ### PIT HTML Report Structure
 PIT creates a timestamped subdirectory for each run (e.g., `report/20260728.../index.html`). The `DirectoryReader` resolves the latest directory. Tests should walk the report tree to find `index.html`, not assume it's directly in the report dir.`
