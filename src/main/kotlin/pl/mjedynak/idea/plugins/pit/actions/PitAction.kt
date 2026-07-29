@@ -3,12 +3,15 @@ package pl.mjedynak.idea.plugins.pit.actions
 import com.intellij.execution.ProgramRunnerUtil
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.runners.ExecutionEnvironmentBuilder
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataKeys
 import pl.mjedynak.idea.plugins.pit.configuration.PitRunConfiguration
 
 abstract class PitAction : AnAction() {
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
     override fun update(e: AnActionEvent) {
         val project = e.getData(DataKeys.PROJECT)
         val module = e.getData(DataKeys.MODULE)

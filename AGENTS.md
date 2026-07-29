@@ -58,12 +58,13 @@ src/main/kotlin/pl/mjedynak/idea/plugins/pit/
     └── MavenPomReader.kt
 
 src/testSupport/kotlin/pl/mjedynak/idea/plugins/pit/
-├── PitTestHelper.kt           # E2E test helper (runs PIT in forked JVM)
+├── PitTestHelper.kt           # E2E test helper (creates PitRunConfiguration and executes it)
+├── PitActionTestHelper.kt     # Verifies action visibility/enablement and simulates user clicking the action
 └── PitOutputReader.kt         # Reads PIT process info via reflection
 src/test/kotlin/                   # All tests are Kotlin (8 test files)
 src/integrationTest/
 ├── kotlin/                        # Integration tests using IntelliJ Starter framework
-│   └── PitPluginIntegrationTest.kt  # 4 tests: plugin load, actions, config type, E2E PIT execution
+│   └── PitPluginIntegrationTest.kt  # 2 test scenarios: (1) plugin load + config + PIT via helper, (2) action visibility check + simulated click + PIT report
 └── resources/testProject/         # Test project with Calculator.java, CalculatorTest.java
 META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 ```
@@ -89,8 +90,9 @@ META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 - Unit tests in `src/test/kotlin/` — run with: `./gradlew test`
 - Integration tests in `src/integrationTest/kotlin/` — run with: `./gradlew integrationTest`
 - `ClassPathPopulatorTest` is a meta-test: parses `build.gradle.kts` to verify `ClassPathPopulator.kt` references correct PIT versions (prevents version drift)
-- **Integration test approach**: Uses IntelliJ Starter framework (`testIdeUi`) to start a real separate IDE process with the plugin installed. Communication via `@Remote` stubs over JMX. `PitTestHelper.kt` (in `src/testSupport/`, bundled in the plugin JAR) is invoked remotely — it builds the classpath and PIT command directly, then starts PIT as a forked JVM process. This bypasses IntelliJ's unreliable module root resolution in test environments.
+- **Integration test approach**: Uses IntelliJ Starter framework (`testIdeUi`) to start a single IDE process shared across all test methods via `@BeforeAll`/`@AfterAll` in a `companion object`. Communication via `@Remote` stubs over JMX. `PitTestHelper.kt` and `PitActionTestHelper.kt` (in `src/testSupport/`, bundled in the plugin JAR) are invoked remotely.
 - **Integration test setup**: `setupTestProject` copies test project sources + Gradle wrapper to `build/testProject/`. `compileTestProject` then runs `./gradlew classes testClasses` to pre-compile sources (with JUnit resolved from Maven Central). The `integrationTest` task depends on `buildPlugin`, `setupTestProject`, and `compileTestProject`.
+- **Action integration test flow**: test method calls `verifyActionUpdateForSourceClass()` to check action visibility/enablement, then `performActionForSourceClass()` to simulate user clicking the action (calls `PitAction.actionPerformed()` which triggers `ProgramRunnerUtil.executeConfiguration`). After that the test polls the filesystem for the HTML report and asserts report content via `assertReportFiles()`.
 
 ## Architecture
 
@@ -178,8 +180,9 @@ PitRunConfiguration (ModuleBasedConfiguration)
 
 ### Key Integration Test Files
 - `PitTestHelper.kt` (in `src/testSupport/`) — Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
+- `PitActionTestHelper.kt` (in `src/testSupport/`) — Provides `verifyActionUpdateForSourceClass()` (checks right-click action is visible/enabled for a source class) and `performActionForSourceClass()` (simulates clicking the action, triggering PIT execution).
 - `PitOutputReader.kt` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`).
-- `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitOutputReader` inside the test IDE over JMX.
+- `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitActionTestHelper`/`PitOutputReader` inside the test IDE over JMX. Both test methods share a single IDE process (started once in `@BeforeAll`, closed in `@AfterAll`). Each test runs PIT, waits for the report, asserts via `assertReportFiles()`, then cleans up the report dir with `deleteRecursively()`.
 
 ### PIT HTML Report Structure
 PIT creates a timestamped subdirectory for each run (e.g., `report/20260728.../index.html`). The `DirectoryReader` resolves the latest directory. Tests should walk the report tree to find `index.html`, not assume it's directly in the report dir.`
