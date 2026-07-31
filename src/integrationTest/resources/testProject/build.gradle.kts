@@ -18,3 +18,8 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.register<Sync>("copyTestLib") {
+    from(configurations.testRuntimeClasspath)
+    into(layout.buildDirectory.dir("testLib"))
+}

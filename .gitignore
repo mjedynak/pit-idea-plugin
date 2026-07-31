@@ -9,3 +9,10 @@
 build/*
 out/*
 /allure-results/*
+# The integration test project ships a committed .idea module config (needed for PIT classpath)
+!src/integrationTest/resources/testProject/.idea/
+!src/integrationTest/resources/testProject/.idea/*
+!src/integrationTest/resources/testProject/.idea/testProject.iml
+!src/integrationTest/resources/testProject/.idea/modules.xml
+!src/integrationTest/resources/testProject/.idea/misc.xml
+!src/integrationTest/resources/testProject/.idea/workspace.xml

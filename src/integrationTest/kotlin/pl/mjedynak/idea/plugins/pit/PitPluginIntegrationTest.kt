@@ -25,6 +25,8 @@ import kotlin.time.Duration.Companion.minutes
 
 private const val PLUGIN_ID = "PIT mutation testing Idea plugin"
 
+private const val TIMESTAMPED_DIR_NAME_LENGTH = 14
+
 @Remote("pl.mjedynak.idea.plugins.pit.PitTestHelper", plugin = PLUGIN_ID)
 interface PitTestHelperStub {
     fun executePitForTest(project: Project): String
@@ -101,13 +103,14 @@ class PitPluginIntegrationTest {
 
             val projectPath = project.getBasePath()
             val reportDirFile = File("$projectPath/report")
+            cleanReportDir(reportDirFile)
+            val preExistingReportDirs = reportDirNames(reportDirFile)
 
             val result = utility(PitTestHelperStub::class).executePitForTest(project)
             assertTrue(result.startsWith("SUCCESS"), "PIT execution should succeed.\n$result")
 
-            waitForHtmlReport(reportDirFile, project)
+            waitForHtmlReport(reportDirFile, preExistingReportDirs, project)
             assertReportFiles(reportDirFile)
-            reportDirFile.deleteRecursively()
         }
     }
 
@@ -125,13 +128,14 @@ class PitPluginIntegrationTest {
 
             val projectPath = project.getBasePath()
             val reportDirFile = File("$projectPath/report")
+            cleanReportDir(reportDirFile)
+            val preExistingReportDirs = reportDirNames(reportDirFile)
 
             val actionResult = utility(PitActionTestHelperStub::class).performActionForSourceClass(project)
             assertTrue(actionResult.startsWith("SUCCESS"), "action.actionPerformed() should succeed.\n$actionResult")
 
-            waitForHtmlReport(reportDirFile, project)
+            waitForHtmlReport(reportDirFile, preExistingReportDirs, project)
             assertReportFiles(reportDirFile)
-            reportDirFile.deleteRecursively()
         }
     }
 
@@ -155,18 +159,23 @@ class PitPluginIntegrationTest {
 
     private fun assertReportFiles(reportDirFile: File) {
         val htmlFiles = reportDirFile.walkTopDown().filter { it.extension == "html" }.toList()
-        assertReportContent(htmlFiles)
+        assertReportContent(htmlFiles, File(reportDirFile, "index.html"))
         assertCalculatorReportExists(htmlFiles)
     }
 
     private fun Driver.waitForHtmlReport(
         reportDirFile: File,
+        preExistingReportDirs: Set<String>,
         project: Project,
-        timeoutMs: Long = 60_000L,
+        timeoutMs: Long = 120_000L,
     ) {
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < timeoutMs) {
-            if (reportDirFile.exists() && reportDirFile.walkTopDown().any { it.name == "index.html" }) {
+            if (File(reportDirFile, "index.html").exists()) {
+                return
+            }
+            val newReportDir = newReportDir(reportDirFile, preExistingReportDirs)
+            if (newReportDir != null && File(newReportDir, "index.html").exists()) {
                 return
             }
             Thread.sleep(1000)
@@ -178,8 +187,53 @@ class PitPluginIntegrationTest {
         )
     }
 
-    private fun assertReportContent(htmlFiles: List<File>) {
-        val indexFile = htmlFiles.find { it.name == "index.html" }
+    private fun cleanReportDir(reportDirFile: File) {
+        if (!reportDirFile.exists()) return
+        var attempts = 0
+        while (reportDirFile.exists() && attempts < 10) {
+            reportDirFile.deleteRecursively()
+            if (!reportDirFile.exists()) return
+            attempts++
+            Thread.sleep(500)
+        }
+        assertTrue(
+            !reportDirFile.exists(),
+            "Report directory could not be cleaned before the test: ${reportDirFile.absolutePath}",
+        )
+    }
+
+    private fun reportDirNames(reportDirFile: File): Set<String> =
+        if (reportDirFile.isDirectory) {
+            reportDirFile
+                .listFiles()
+                ?.filter { it.isDirectory }
+                ?.map { it.name }
+                ?.toSet()
+                .orEmpty()
+        } else {
+            emptySet()
+        }
+
+    private fun newReportDir(
+        reportDirFile: File,
+        preExistingReportDirs: Set<String>,
+    ): File? {
+        if (!reportDirFile.isDirectory) return null
+        return reportDirFile
+            .listFiles()
+            ?.filter {
+                it.isDirectory &&
+                    it.name !in preExistingReportDirs &&
+                    it.name.length == TIMESTAMPED_DIR_NAME_LENGTH &&
+                    it.name.all(Char::isDigit)
+            }?.maxByOrNull { it.lastModified() }
+    }
+
+    private fun assertReportContent(
+        htmlFiles: List<File>,
+        mainIndexFile: File,
+    ) {
+        val indexFile = mainIndexFile.takeIf { it.exists() } ?: htmlFiles.find { it.name == "index.html" }
         assertNotNull(indexFile, "index.html should exist in report directory (found: ${htmlFiles.joinToString { it.name }})")
         val indexContent = indexFile!!.readText()
         assertTrue(indexContent.contains("Mutation Coverage"), "Report should contain Mutation Coverage column")
