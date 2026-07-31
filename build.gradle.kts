@@ -85,7 +85,7 @@ tasks.test {
 val testProjectDir = layout.buildDirectory.dir("testProject").get().asFile
 val testProjectSourceDir = file("src/integrationTest/resources/testProject")
 
-val setupTestProject = tasks.register<Copy>("setupTestProject") {
+val setupTestProject = tasks.register<Sync>("setupTestProject") {
     from(testProjectSourceDir)
     from(rootDir) {
         include("gradlew")
@@ -99,7 +99,7 @@ val compileTestProject = tasks.register<Exec>("compileTestProject") {
     dependsOn(setupTestProject)
     workingDir = testProjectDir
     val gradleCmd = if (System.getProperty("os.name").lowercase().contains("windows")) "gradlew.bat" else "./gradlew"
-    commandLine(gradleCmd, "classes", "testClasses", "--no-daemon")
+    commandLine(gradleCmd, "copyTestLib", "classes", "testClasses", "--no-daemon")
 }
 
 val integrationTest = intellijPlatformTesting.testIdeUi.register("integrationTest") {
