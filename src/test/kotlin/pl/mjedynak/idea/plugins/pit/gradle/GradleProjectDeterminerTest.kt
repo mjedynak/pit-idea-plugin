@@ -25,6 +25,17 @@ class GradleProjectDeterminerTest {
     }
 
     @Test
+    fun `should determine that project is gradle one if it has build gradle kts`() {
+        whenever(project.baseDir).thenReturn(baseDir)
+        val buildGradleKtsFile: VirtualFile = mock()
+        whenever(baseDir.findChild(GradleProjectDeterminer.BUILD_GRADLE_KTS_FILE)).thenReturn(buildGradleKtsFile)
+
+        val result = projectDeterminer.isGradleProject(project)
+
+        assertTrue(result)
+    }
+
+    @Test
     fun `should determine that project is not gradle one if build gradle not found`() {
         whenever(project.baseDir).thenReturn(baseDir)
 
