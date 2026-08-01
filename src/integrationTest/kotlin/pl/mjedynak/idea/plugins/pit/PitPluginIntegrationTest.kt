@@ -167,7 +167,7 @@ class PitPluginIntegrationTest {
         reportDirFile: File,
         preExistingReportDirs: Set<String>,
         project: Project,
-        timeoutMs: Long = 120_000L,
+        timeoutMs: Long = 30_000L,
     ) {
         val startTime = System.currentTimeMillis()
         while (System.currentTimeMillis() - startTime < timeoutMs) {
