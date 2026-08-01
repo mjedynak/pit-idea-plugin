@@ -173,18 +173,19 @@ class PitPluginIntegrationTest {
                     .split(",")
                     .filter { it.isNotBlank() }
                     .associate { pair ->
-                        val (line, status, hasTooltip) = pair.split(":")
-                        line.toInt() to "$status:$hasTooltip"
+                        val (line, status, hasTooltip, hasMenu) = pair.split(":")
+                        line.toInt() to "$status:$hasTooltip:$hasMenu"
                     }
             assertTrue(
                 annotatedLines.isNotEmpty(),
                 "At least one line should be marked in the editor.\nRaw helper output:\n$coverage",
             )
             assertEquals(
-                mapOf(6 to "COVERED:1", 10 to "COVERED:1", 14 to "UNCOVERED:1"),
+                mapOf(6 to "COVERED:1:1", 10 to "COVERED:1:1", 14 to "UNCOVERED:1:1"),
                 annotatedLines,
                 "Lines 6 and 10 should be COVERED, line 14 should be UNCOVERED (NO_COVERAGE mutations), " +
-                    "and every annotated line must have a gutter icon with a non-blank tooltip.\n" +
+                    "and every annotated line must have a gutter icon with a non-blank tooltip and a " +
+                    "popup menu.\n" +
                     "Raw helper output:\n$coverage",
             )
         }

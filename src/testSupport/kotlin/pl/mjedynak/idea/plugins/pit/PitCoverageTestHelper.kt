@@ -19,6 +19,8 @@ object PitCoverageTestHelper {
         return !gutterRenderer.tooltipText.isNullOrBlank()
     }
 
+    private fun hasPopupMenu(highlighter: RangeHighlighter): Boolean = highlighter.gutterIconRenderer?.popupMenuActions != null
+
     private const val CALCULATOR_SOURCE_PATH = "src/main/java/calculator/Calculator.java"
 
     private const val COVERAGE_TIMEOUT_MS = 30_000L
@@ -81,7 +83,8 @@ object PitCoverageTestHelper {
                                             val lineNumber = editor.document.getLineNumber(highlighter.startOffset) + 1
                                             val status = (highlighter.lineMarkerRenderer as CoverageLineMarkerRenderer).status
                                             val hasTooltip = hasNonBlankGutterTooltip(highlighter)
-                                            "$lineNumber:${status.name}:${if (hasTooltip) 1 else 0}"
+                                            val hasMenu = hasPopupMenu(highlighter)
+                                            "$lineNumber:${status.name}:${if (hasTooltip) 1 else 0}:${if (hasMenu) 1 else 0}"
                                         }.distinct()
                                         .sortedBy { it.substringBefore(":").toInt() }
                                 lastSeenLines = annotatedLines
