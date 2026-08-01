@@ -12,11 +12,21 @@ class PitConfigurationFormPopulator {
         pitConfigurationForm: PitConfigurationForm,
         pitCommandLineArgumentsContainer: PitCommandLineArgumentsContainer,
     ) {
-        setReportDir(pitConfigurationForm, pitCommandLineArgumentsContainer)
-        setSourceDir(pitConfigurationForm, pitCommandLineArgumentsContainer)
-        setTargetClasses(pitConfigurationForm, pitCommandLineArgumentsContainer)
-        setTargetTests(pitConfigurationForm, pitCommandLineArgumentsContainer)
-        setOtherParams(pitConfigurationForm)
+        if (pitConfigurationForm.reportDir.isBlank()) {
+            setReportDir(pitConfigurationForm, pitCommandLineArgumentsContainer)
+        }
+        if (pitConfigurationForm.sourceDir.isBlank()) {
+            setSourceDir(pitConfigurationForm, pitCommandLineArgumentsContainer)
+        }
+        if (pitConfigurationForm.targetClasses.isBlank()) {
+            setTargetClasses(pitConfigurationForm, pitCommandLineArgumentsContainer)
+        }
+        if (pitConfigurationForm.targetTests.isBlank()) {
+            setTargetTests(pitConfigurationForm, pitCommandLineArgumentsContainer)
+        }
+        if (pitConfigurationForm.otherParams.isBlank()) {
+            setOtherParams(pitConfigurationForm)
+        }
     }
 
     private fun setTargetClasses(

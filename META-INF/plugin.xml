@@ -14,6 +14,11 @@
     <version>1.4.13-SNAPSHOT</version>
     <change-notes>
         <![CDATA[
+           version 1.4.13
+           <br/>
+           <ul>
+           <li>Mark mutation-covered lines in the editor after PIT execution</li>
+           </ul>
            version 1.4.12
            <br/>
            <ul>
@@ -191,6 +196,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <configurationType implementation="pl.mjedynak.idea.plugins.pit.configuration.PitConfigurationType"/>
+        <projectService serviceImplementation="pl.mjedynak.idea.plugins.pit.editor.PitCoverageAnnotator"/>
     </extensions>
     <depends>com.intellij.modules.java</depends>
 </idea-plugin>

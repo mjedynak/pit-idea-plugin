@@ -3,17 +3,17 @@ package pl.mjedynak.idea.plugins.pit
 import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.ui.RunContentManager
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.psi.PsiManager
+import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerFactory
 import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator
-import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
-import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
+import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.REPORT_DIR
 import java.io.File
 import java.nio.file.Files
 
 object PitOutputReader {
-    private val mavenProjectDeterminer = MavenProjectDeterminer()
-    private val gradleProjectDeterminer = GradleProjectDeterminer()
-
     @JvmStatic
     fun getLastProcessInfo(project: Project): String {
         val runContentManager = RunContentManager.getInstance(project)
@@ -22,6 +22,7 @@ object PitOutputReader {
             return "No run content descriptors found"
         }
 
+        val reportDir = resolveReportDir(project)
         val sb = StringBuilder()
         for ((i, desc) in descriptors.withIndex()) {
             sb
@@ -48,38 +49,36 @@ object PitOutputReader {
             if (processHandler is OSProcessHandler) {
                 readCommandLine(processHandler, sb)
                 readProcessOutput(processHandler, sb)
-                readOutputLog(project, sb)
+                readOutputLog(reportDir, sb)
             }
 
             if (processHandler.isProcessTerminated) {
-                readReportDir(project, sb)
+                readReportDir(reportDir, sb)
             }
         }
         return sb.toString()
     }
 
-    /**
-     * Resolves the default report directory for the project, mirroring
-     * [DefaultArgumentsContainerPopulator.addReportDir].
-     */
-    private fun reportDir(project: Project): File? {
-        val basePath = project.basePath ?: return null
-        val baseDir = File(basePath)
-        val suffix =
-            when {
-                mavenProjectDeterminer.isMavenProject(project) -> {
-                    DefaultArgumentsContainerPopulator.MAVEN_REPORT_DIR
-                }
+    @JvmStatic
+    fun getDefaultReportDir(project: Project): String = resolveReportDir(project).path
 
-                gradleProjectDeterminer.isGradleProject(project) -> {
-                    DefaultArgumentsContainerPopulator.GRADLE_REPORT_DIR
-                }
-
-                else -> {
-                    DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR
-                }
-            }
-        return File(baseDir, suffix)
+    private fun resolveReportDir(project: Project): File {
+        var configuredReportDir: String? = null
+        ApplicationManager.getApplication().runReadAction {
+            val populator =
+                DefaultArgumentsContainerPopulator(
+                    ProjectRootManager.getInstance(project),
+                    PsiManager.getInstance(project),
+                )
+            val container =
+                DefaultArgumentsContainerFactory(populator).createDefaultPitCommandLineArgumentsContainer(project)
+            configuredReportDir = container.get(REPORT_DIR)
+        }
+        if (!configuredReportDir.isNullOrBlank()) {
+            return File(configuredReportDir)
+        }
+        val basePath = project.basePath
+        return File(basePath ?: ".", DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR)
     }
 
     private fun readCommandLine(
@@ -128,10 +127,9 @@ object PitOutputReader {
     }
 
     private fun readOutputLog(
-        project: Project,
+        reportDir: File,
         sb: StringBuilder,
     ) {
-        val reportDir = reportDir(project) ?: return
         val outputLog = File(reportDir, "pit-output.log")
         if (!outputLog.exists()) {
             sb.append("  pit-output.log not found in ").append(reportDir.absolutePath).append("\n")
@@ -151,10 +149,9 @@ object PitOutputReader {
     }
 
     private fun readReportDir(
-        project: Project,
+        reportDir: File,
         sb: StringBuilder,
     ) {
-        val reportDir = reportDir(project) ?: return
         if (!reportDir.exists()) {
             sb.append("  Report dir does not exist: ").append(reportDir.absolutePath).append("\n")
             return
