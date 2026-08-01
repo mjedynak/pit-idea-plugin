@@ -139,6 +139,11 @@ PitRunConfiguration (ModuleBasedConfiguration)
 ### Editor Coverage Annotation
 
 ```
+PitRunConfiguration.startProcess (executor thread)
+    ↓ invokeLater (EDT)
+PitCoverageAnnotator.clearAnnotations()                 # clears stale markings BEFORE the run
+                                                        #   (bands + gutter icons + cached report maps)
+
 PitRunConfiguration.processTerminated (executor thread)
     ↓ invokeLater (EDT)
 PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
@@ -149,6 +154,8 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
         ├── errorStripeMarkColor + errorStripeTooltip (report-style descriptions)
         └── RangeHighlighter.setGutterIconRenderer(GutterIconRenderer)   # status-colored square icon w/ hover tooltip
 ```
+
+- **Markings are cleared before each run**: `PitRunConfiguration.startProcess()` calls `clearPreviousCoverage()` first, which dispatches `PitCoverageAnnotator.clearAnnotations()` to the EDT via `invokeLater` (same required try/catch pattern as `processTerminated`). `clearAnnotations()` removes the coverage highlighters from all open editors **and** resets the cached `mutationsByClassAndLine`/`sourceFilesByClass` maps — the map reset matters because the `editorCreated` listener re-annotates editors on open, and without it a file opened *during* the run would be re-marked with stale data. So the editor is clean while PIT runs, and markings appear only after the new report is parsed.
 
 - Registered as a `projectService` in `META-INF/plugin.xml`; only annotates already-open editors.
 - `processTerminated` runs on the executor thread, so the annotator call is dispatched via `invokeLater`. The inner try/catch is **required**: an uncaught exception inside the `invokeLater` lambda runs on the EDT, pops an error dialog in internal test mode, and hangs subsequent `invokeAndWait` calls. Keep the try/catch but LOG via `LOG.warn` — silent `catch (_: Exception) {}` makes annotation failures undiagnosable in real IDEs.
