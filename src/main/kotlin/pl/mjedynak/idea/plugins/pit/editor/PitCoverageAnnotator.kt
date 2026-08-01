@@ -1,5 +1,9 @@
 package pl.mjedynak.idea.plugins.pit.editor
 
+import com.intellij.openapi.actionSystem.ActionGroup
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
@@ -160,7 +164,7 @@ class PitCoverageAnnotator(
                     highlighter.setErrorStripeMarkColor(errorStripeColor(status))
                     highlighter.errorStripeTooltip = tooltip
                     if (tooltip.isNotBlank()) {
-                        highlighter.setGutterIconRenderer(CoverageGutterIconRenderer(status, tooltip))
+                        highlighter.setGutterIconRenderer(CoverageGutterIconRenderer(status, tooltip, project))
                     }
                     if (status == LineCoverageStatus.COVERED) {
                         covered++
@@ -251,17 +255,28 @@ class PitCoverageAnnotator(
  * Gutter icon renderer attached to each annotated line's highlighter via
  * [com.intellij.openapi.editor.markup.RangeHighlighter.setGutterIconRenderer]. Shows a
  * status-colored square in the gutter; hovering it displays the mutation descriptions in the
- * report-style tooltip format (same text as the error-stripe tooltip). [DumbAware] keeps the icon
- * visible while indexing runs. Removing the highlighter releases the renderer.
+ * report-style tooltip format (same text as the error-stripe tooltip). Right-clicking it opens a
+ * context menu with "Clear PIT coverage markings". [DumbAware] keeps the icon visible while
+ * indexing runs. Removing the highlighter releases the renderer.
  */
 private class CoverageGutterIconRenderer(
     private val status: LineCoverageStatus,
     private val tooltip: String,
+    private val project: Project,
 ) : GutterIconRenderer(),
     DumbAware {
     override fun getIcon(): Icon = StatusSquareIcon(gutterIconColor(status))
 
     override fun getTooltipText(): String = tooltip
+
+    override fun getPopupMenuActions(): ActionGroup =
+        DefaultActionGroup(
+            object : AnAction("Clear PIT coverage markings"), DumbAware {
+                override fun actionPerformed(e: AnActionEvent) {
+                    project.getService(PitCoverageAnnotator::class.java).clearAnnotations()
+                }
+            },
+        )
 
     override fun getAlignment(): GutterIconRenderer.Alignment = GutterIconRenderer.Alignment.LEFT
 
