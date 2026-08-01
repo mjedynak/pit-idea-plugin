@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.io.File
 import java.nio.file.Path
+import java.util.Date
 import kotlin.time.Duration.Companion.minutes
 
 private const val PLUGIN_ID = "PIT mutation testing Idea plugin"
@@ -89,6 +90,8 @@ class PitPluginIntegrationTest {
                 bgRun.closeIdeAndWait()
             }
         }
+
+        private const val EXCERPT_LENGTH = 3000
     }
 
     @Test
@@ -102,7 +105,7 @@ class PitPluginIntegrationTest {
             assertRunManagerAvailable(project)
 
             val projectPath = project.getBasePath()
-            val reportDirFile = File("$projectPath/report")
+            val reportDirFile = expectedReportDir(projectPath)
             cleanReportDir(reportDirFile)
             val preExistingReportDirs = reportDirNames(reportDirFile)
 
@@ -127,7 +130,7 @@ class PitPluginIntegrationTest {
             assertTrue(updateResult.startsWith("SUCCESS"), "action.update() should succeed for source class context.\n$updateResult")
 
             val projectPath = project.getBasePath()
-            val reportDirFile = File("$projectPath/report")
+            val reportDirFile = expectedReportDir(projectPath)
             cleanReportDir(reportDirFile)
             val preExistingReportDirs = reportDirNames(reportDirFile)
 
@@ -183,8 +186,92 @@ class PitPluginIntegrationTest {
         val output = utility(PitOutputReaderStub::class).getLastProcessInfo(project)
         assertTrue(
             false,
-            "PIT should generate HTML report within ${timeoutMs / 1000}s in ${reportDirFile.absolutePath}\nPIT output:\n$output",
+            "PIT should generate HTML report within ${timeoutMs / 1000}s.\n" +
+                reportDiagnostics(reportDirFile, project) +
+                "\nPIT output:\n$output",
         )
+    }
+
+    /**
+     * Resolves the directory where the plugin writes the PIT report by default,
+     * mirroring [pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator.addReportDir].
+     * The test project contains a Gradle build file, so it is detected as a Gradle project
+     * and the report is written to `build/reports/pit` rather than `report`.
+     */
+    private fun expectedReportDir(projectPath: String): File {
+        val baseDir = File(projectPath)
+        val suffix =
+            when {
+                File(baseDir, "pom.xml").exists() -> "target/report"
+                isGradleProject(baseDir) -> "build/reports/pit"
+                else -> "report"
+            }
+        return File(baseDir, suffix)
+    }
+
+    private fun isGradleProject(baseDir: File): Boolean =
+        File(baseDir, "build.gradle").exists() || File(baseDir, "build.gradle.kts").exists()
+
+    private fun reportDiagnostics(
+        reportDirFile: File,
+        project: Project,
+    ): String {
+        val basePath = project.getBasePath()
+        val sb = StringBuilder()
+        sb
+            .append("Expected report dir: ")
+            .append(reportDirFile.absolutePath)
+            .append("\n")
+        sb.append("  exists: ").append(reportDirFile.exists()).append("\n")
+        if (reportDirFile.exists()) {
+            sb.append("  contents:\n")
+            appendDirContents(reportDirFile, sb)
+        }
+        sb
+            .append("Project type detection inputs:\n")
+            .append("  pom.xml: ")
+            .append(File(basePath, "pom.xml").exists())
+            .append("\n")
+            .append("  build.gradle: ")
+            .append(File(basePath, "build.gradle").exists())
+            .append("\n")
+            .append("  build.gradle.kts: ")
+            .append(File(basePath, "build.gradle.kts").exists())
+            .append("\n")
+        sb.append("index.html files found under project base path:\n")
+        File(basePath)
+            .walkTopDown()
+            .filter { it.isFile && it.name == "index.html" }
+            .sortedByDescending { it.lastModified() }
+            .take(20)
+            .forEach {
+                sb
+                    .append("  ")
+                    .append(it.absolutePath)
+                    .append(" (")
+                    .append(Date(it.lastModified()))
+                    .append(")\n")
+            }
+        return sb.toString()
+    }
+
+    private fun appendDirContents(
+        dir: File,
+        sb: StringBuilder,
+    ) {
+        dir.listFiles()?.sortedBy { it.name }?.forEach {
+            val suffix = if (it.isDirectory) "/" else ""
+            sb
+                .append("    ")
+                .append(it.name)
+                .append(suffix)
+                .append(" (")
+                .append(it.length())
+                .append(" bytes)\n")
+            if (it.isDirectory) {
+                appendDirContents(it, sb)
+            }
+        }
     }
 
     private fun cleanReportDir(reportDirFile: File) {
@@ -234,16 +321,40 @@ class PitPluginIntegrationTest {
         mainIndexFile: File,
     ) {
         val indexFile = mainIndexFile.takeIf { it.exists() } ?: htmlFiles.find { it.name == "index.html" }
-        assertNotNull(indexFile, "index.html should exist in report directory (found: ${htmlFiles.joinToString { it.name }})")
+        assertNotNull(
+            indexFile,
+            "index.html should exist in report directory.\nFound HTML files:\n${formatHtmlFiles(htmlFiles)}",
+        )
         val indexContent = indexFile!!.readText()
-        assertTrue(indexContent.contains("Mutation Coverage"), "Report should contain Mutation Coverage column")
-        assertTrue(indexContent.contains("Test Strength"), "Report should contain Test Strength column")
+        assertTrue(
+            indexContent.contains("Mutation Coverage"),
+            "Report should contain Mutation Coverage column.\n" +
+                "Report file: ${indexFile.absolutePath}\nContent excerpt:\n${contentExcerpt(indexContent)}",
+        )
+        assertTrue(
+            indexContent.contains("Test Strength"),
+            "Report should contain Test Strength column.\n" +
+                "Report file: ${indexFile.absolutePath}\nContent excerpt:\n${contentExcerpt(indexContent)}",
+        )
     }
 
     private fun assertCalculatorReportExists(htmlFiles: List<File>) {
         val calculatorFile = htmlFiles.find { it.name == "Calculator.java.html" }
-        assertNotNull(calculatorFile, "Calculator.java.html should exist in report")
+        assertNotNull(
+            calculatorFile,
+            "Calculator.java.html should exist in report.\nFound HTML files:\n${formatHtmlFiles(htmlFiles)}",
+        )
         val calculatorContent = calculatorFile!!.readText()
-        assertTrue(calculatorContent.contains("Calculator"), "Calculator report should mention Calculator")
+        assertTrue(
+            calculatorContent.contains("Calculator"),
+            "Calculator report should mention Calculator.\n" +
+                "Report file: ${calculatorFile.absolutePath}\nContent excerpt:\n${contentExcerpt(calculatorContent)}",
+        )
     }
+
+    private fun formatHtmlFiles(htmlFiles: List<File>): String =
+        htmlFiles.joinToString("\n") { "  ${it.absolutePath} (${it.length()} bytes)" }
+
+    private fun contentExcerpt(content: String): String =
+        content.take(EXCERPT_LENGTH).let { if (content.length > EXCERPT_LENGTH) "$it..." else it }
 }

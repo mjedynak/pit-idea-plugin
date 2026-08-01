@@ -4,10 +4,16 @@ import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.ui.RunContentManager
 import com.intellij.openapi.project.Project
+import pl.mjedynak.idea.plugins.pit.cli.factory.DefaultArgumentsContainerPopulator
+import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
+import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
 import java.io.File
 import java.nio.file.Files
 
 object PitOutputReader {
+    private val mavenProjectDeterminer = MavenProjectDeterminer()
+    private val gradleProjectDeterminer = GradleProjectDeterminer()
+
     @JvmStatic
     fun getLastProcessInfo(project: Project): String {
         val runContentManager = RunContentManager.getInstance(project)
@@ -16,7 +22,6 @@ object PitOutputReader {
             return "No run content descriptors found"
         }
 
-        val basePath = project.basePath
         val sb = StringBuilder()
         for ((i, desc) in descriptors.withIndex()) {
             sb
@@ -43,14 +48,38 @@ object PitOutputReader {
             if (processHandler is OSProcessHandler) {
                 readCommandLine(processHandler, sb)
                 readProcessOutput(processHandler, sb)
-                readOutputLog(basePath, sb)
+                readOutputLog(project, sb)
             }
 
             if (processHandler.isProcessTerminated) {
-                readReportDir(basePath, sb)
+                readReportDir(project, sb)
             }
         }
         return sb.toString()
+    }
+
+    /**
+     * Resolves the default report directory for the project, mirroring
+     * [DefaultArgumentsContainerPopulator.addReportDir].
+     */
+    private fun reportDir(project: Project): File? {
+        val basePath = project.basePath ?: return null
+        val baseDir = File(basePath)
+        val suffix =
+            when {
+                mavenProjectDeterminer.isMavenProject(project) -> {
+                    DefaultArgumentsContainerPopulator.MAVEN_REPORT_DIR
+                }
+
+                gradleProjectDeterminer.isGradleProject(project) -> {
+                    DefaultArgumentsContainerPopulator.GRADLE_REPORT_DIR
+                }
+
+                else -> {
+                    DefaultArgumentsContainerPopulator.DEFAULT_REPORT_DIR
+                }
+            }
+        return File(baseDir, suffix)
     }
 
     private fun readCommandLine(
@@ -99,16 +128,21 @@ object PitOutputReader {
     }
 
     private fun readOutputLog(
-        basePath: String?,
+        project: Project,
         sb: StringBuilder,
     ) {
-        if (basePath == null) return
-        val outputLog = File(basePath, "report/pit-output.log")
-        if (!outputLog.exists()) return
+        val reportDir = reportDir(project) ?: return
+        val outputLog = File(reportDir, "pit-output.log")
+        if (!outputLog.exists()) {
+            sb.append("  pit-output.log not found in ").append(reportDir.absolutePath).append("\n")
+            return
+        }
         try {
             val logContent = Files.readString(outputLog.toPath())
             sb
-                .append("  pit-output.log:\n  ")
+                .append("  pit-output.log (")
+                .append(reportDir.absolutePath)
+                .append("):\n  ")
                 .append(logContent.replace("\n", "\n  "))
                 .append("\n")
         } catch (e: Exception) {
@@ -117,16 +151,15 @@ object PitOutputReader {
     }
 
     private fun readReportDir(
-        basePath: String?,
+        project: Project,
         sb: StringBuilder,
     ) {
-        if (basePath == null) return
-        val reportDir = File(basePath, "report")
+        val reportDir = reportDir(project) ?: return
         if (!reportDir.exists()) {
-            sb.append("  Report dir does not exist\n")
+            sb.append("  Report dir does not exist: ").append(reportDir.absolutePath).append("\n")
             return
         }
-        sb.append("  Report dir contents:\n")
+        sb.append("  Report dir contents (").append(reportDir.absolutePath).append("):\n")
         val files = reportDir.listFiles()
         if (files.isNullOrEmpty()) {
             sb.append("    (empty or no files)\n")
