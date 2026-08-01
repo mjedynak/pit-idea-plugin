@@ -95,6 +95,26 @@ class PitCoverageAnnotator(
             "Classes: $resolution"
     }
 
+    /**
+     * Removes the coverage markings (status bands + gutter icons) from all open editors of this
+     * project and forgets the previously parsed report. Called before each PIT run starts so the
+     * editor is clean while the new run executes; must be dispatched to the EDT. Forgetting the
+     * cached maps also prevents a file opened *during* the run from being re-marked with stale
+     * data by the [EditorFactoryListener.editorCreated] hook.
+     */
+    fun clearAnnotations() {
+        if (project.isDisposed) {
+            return
+        }
+        mutationsByClassAndLine = emptyMap()
+        sourceFilesByClass = emptyMap()
+        EditorFactory
+            .getInstance()
+            .allEditors
+            .filter { it.project == project }
+            .forEach { removeAnnotation(it) }
+    }
+
     private fun resolveMutationsFile(reportDir: File): File? {
         val reportRoot =
             if (File(reportDir, "mutations.xml").exists()) {

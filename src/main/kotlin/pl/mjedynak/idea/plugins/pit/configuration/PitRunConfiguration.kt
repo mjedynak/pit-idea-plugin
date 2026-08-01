@@ -59,7 +59,6 @@ class PitRunConfiguration(
         JavaRunConfigurationModule(project, false),
         configurationFactory,
     ) {
-
     companion object {
         private val LOG = Logger.getInstance(PitRunConfiguration::class.java)
     }
@@ -107,6 +106,7 @@ class PitRunConfiguration(
 
                 @Throws(ExecutionException::class)
                 override fun startProcess(): OSProcessHandler {
+                    clearPreviousCoverage()
                     val commandLine = createCommandLine()
                     val handler = ColoredProcessHandler(commandLine)
                     val outputBuilder = StringBuilder()
@@ -187,6 +187,26 @@ class PitRunConfiguration(
     override fun createInstance(): ModuleBasedConfiguration<RunConfigurationModule, PitRunConfiguration> {
         val pitRunConfigurationFactory = PitRunConfigurationFactory()
         return pitRunConfigurationFactory.createConfiguration(project)
+    }
+
+    /**
+     * Clears coverage markings from all open editors before the PIT run starts, so the editor
+     * does not show stale mutation lines while the new run executes. Runs on the executor thread,
+     * so the annotator call is dispatched to the EDT. The inner try/catch is required: an uncaught
+     * exception inside the `invokeLater` lambda would run on the EDT and pop an error dialog.
+     */
+    private fun clearPreviousCoverage() {
+        try {
+            ApplicationManager.getApplication().invokeLater {
+                try {
+                    this@PitRunConfiguration.project.getService(PitCoverageAnnotator::class.java).clearAnnotations()
+                } catch (e: Exception) {
+                    LOG.warn("PIT coverage annotation clear failed", e)
+                }
+            }
+        } catch (e: Exception) {
+            LOG.warn("PIT coverage annotation clear dispatch failed", e)
+        }
     }
 
     internal fun populateFormIfNeeded() {
