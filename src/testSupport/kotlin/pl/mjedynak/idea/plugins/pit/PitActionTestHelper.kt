@@ -1,6 +1,7 @@
 package pl.mjedynak.idea.plugins.pit
 
 import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionUiKind
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DataContext
 import com.intellij.openapi.module.ModuleManager
@@ -34,10 +35,12 @@ object PitActionTestHelper {
 
             diagnostics.append("Step 4: Creating AnActionEvent...\n")
             val event =
-                AnActionEvent.createFromDataContext(
-                    "ProjectViewPopupMenuRunGroup",
-                    null,
+                AnActionEvent.createEvent(
                     dataContext,
+                    null,
+                    "ProjectViewPopupMenuRunGroup",
+                    ActionUiKind.NONE,
+                    null,
                 )
 
             diagnostics.append("Step 5: Calling action.update() on EDT via invokeAndWait...\n")
@@ -86,10 +89,12 @@ object PitActionTestHelper {
 
             diagnostics.append("Step 4: Creating AnActionEvent...\n")
             val event =
-                AnActionEvent.createFromDataContext(
-                    "ProjectViewPopupMenuRunGroup",
-                    null,
+                AnActionEvent.createEvent(
                     dataContext,
+                    null,
+                    "ProjectViewPopupMenuRunGroup",
+                    ActionUiKind.NONE,
+                    null,
                 )
 
             diagnostics.append("Step 5: Calling action.actionPerformed() on EDT...\n")

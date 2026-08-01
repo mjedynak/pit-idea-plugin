@@ -10,6 +10,7 @@ import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLAS
 import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
+import java.io.File
 
 class DefaultArgumentsContainerPopulator(
     private val projectRootManager: ProjectRootManager,
@@ -23,14 +24,14 @@ class DefaultArgumentsContainerPopulator(
         project: Project,
         container: PitCommandLineArgumentsContainer,
     ) {
-        val baseDir = project.baseDir ?: return
+        val basePath = project.basePath ?: return
         var suffix = DEFAULT_REPORT_DIR
         if (mavenProjectDeterminer.isMavenProject(project)) {
             suffix = MAVEN_REPORT_DIR
         } else if (gradleProjectDeterminer.isGradleProject(project)) {
             suffix = GRADLE_REPORT_DIR
         }
-        val reportDir = "${baseDir.path}/$suffix"
+        val reportDir = "$basePath/$suffix"
         container.put(REPORT_DIR, reportDir)
     }
 
@@ -59,9 +60,12 @@ class DefaultArgumentsContainerPopulator(
         project: Project,
         container: PitCommandLineArgumentsContainer,
     ) {
-        val baseDir = project.baseDir
-        val pomVirtualFile = baseDir.findChild(MavenProjectDeterminer.POM_FILE)
-        val groupId = mavenPomReader.getGroupId(pomVirtualFile!!.inputStream)
+        val basePath = project.basePath ?: return
+        val pomFile = File(basePath, MavenProjectDeterminer.POM_FILE)
+        if (!pomFile.exists()) {
+            return
+        }
+        val groupId = mavenPomReader.getGroupId(pomFile.inputStream())
         container.put(TARGET_CLASSES, "$groupId$ALL_CLASSES_SUFFIX")
     }
 

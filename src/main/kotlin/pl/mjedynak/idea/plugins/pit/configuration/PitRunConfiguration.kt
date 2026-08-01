@@ -16,8 +16,8 @@ import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.process.ColoredProcessHandler
 import com.intellij.execution.process.OSProcessHandler
-import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
+import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
@@ -111,7 +111,7 @@ class PitRunConfiguration(
                     val handler = ColoredProcessHandler(commandLine)
                     val outputBuilder = StringBuilder()
                     handler.addProcessListener(
-                        object : ProcessAdapter() {
+                        object : ProcessListener {
                             override fun onTextAvailable(
                                 event: ProcessEvent,
                                 outputType: Key<*>,
@@ -183,11 +183,6 @@ class PitRunConfiguration(
     }
 
     override fun getValidModules(): Collection<Module> = listOf(*ModuleManager.getInstance(project).modules)
-
-    override fun createInstance(): ModuleBasedConfiguration<RunConfigurationModule, PitRunConfiguration> {
-        val pitRunConfigurationFactory = PitRunConfigurationFactory()
-        return pitRunConfigurationFactory.createConfiguration(project)
-    }
 
     /**
      * Clears coverage markings from all open editors before the PIT run starts, so the editor

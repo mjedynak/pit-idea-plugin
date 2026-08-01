@@ -1,6 +1,6 @@
 package pl.mjedynak.idea.plugins.pit.actions
 
-import com.intellij.openapi.fileTypes.StdFileTypes
+import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
@@ -22,7 +22,7 @@ class PitTestSomeClassesAction : DirectoryOrFilePitAction() {
         module: Module,
         vfile: VirtualFile,
     ): Boolean =
-        (vfile.isDirectory || vfile.fileType == StdFileTypes.JAVA) &&
+        (vfile.isDirectory || vfile.fileType == JavaFileType.INSTANCE) &&
             module.moduleContentScope.contains(vfile) &&
             !module.moduleTestsWithDependentsScope.contains(vfile)
 

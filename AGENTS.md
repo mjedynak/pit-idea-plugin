@@ -213,18 +213,19 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
 - The `build.gradle.kts` JUnit version MUST match both the committed `.iml` library (jar filenames in `build/testLib/`) and the plugin's bundled `junit-platform-launcher` version. Currently all are `6.1.1`. A mismatch (e.g., `5.11.1` in test project + `6.1.1` launcher) causes PIT to fail silently with `"Pitest could not run any tests"` because the launcher and engine versions are incompatible.
 
 ### Debugging PIT failures
-- PIT runs as a forked JVM via `PitRunConfiguration.startProcess()`. If the process exits before a `ProcessAdapter` is registered (because `super.startProcess()` starts the process), the listener misses `onTextAvailable` events. **Fix**: create the `ColoredProcessHandler` directly, attach listeners, then call `startNotify()`:
+- PIT runs as a forked JVM via `PitRunConfiguration.startProcess()`. If the process exits before a process listener is registered (because `super.startProcess()` starts the process), the listener misses `onTextAvailable` events. **Fix**: create the `ColoredProcessHandler` directly, attach listeners, then call `startNotify()`:
   ```kotlin
   val handler = ColoredProcessHandler(commandLine)
-  handler.addProcessListener(object : ProcessAdapter() { ... })
+  handler.addProcessListener(object : ProcessListener { ... })
   handler.startNotify()
   ```
+  (`ProcessAdapter` is deprecated in current platform versions — implement `ProcessListener` directly; all its methods have default implementations.)
 - To capture PIT output for debugging, run the exact command line from the test report directly in a terminal (extract from `PIT output: Command line:` in the HTML report). This bypasses IntelliJ and shows PIT's actual error messages.
 
 ### Key Integration Test Files
 - `PitTestHelper.kt` (in `src/testSupport/`) — Creates `PitRunConfiguration` and calls `executeConfiguration()` with `waitForProcessCompletion=true`.
 - `PitActionTestHelper.kt` (in `src/testSupport/`) — Provides `verifyActionUpdateForSourceClass()` (checks right-click action is visible/enabled for a source class) and `performActionForSourceClass()` (simulates clicking the action, triggering PIT execution).
-- `PitOutputReader.kt` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by `ProcessAdapter`); also exposes `getDefaultReportDir(project)` which resolves the plugin's own report-dir default (see Report dir resolution above).
+- `PitOutputReader.kt` (in `src/testSupport/`) — reads PIT process info from `RunContentManager` via reflection (exit code, command line, report dir contents, and optionally `pit-output.log` written by the plugin's process listener in `PitRunConfiguration`); also exposes `getDefaultReportDir(project)` which resolves the plugin's own report-dir default (see Report dir resolution above).
 - `PitCoverageTestHelper.kt` (in `src/testSupport/`) — opens `Calculator.java` in an editor, polls the markup model for `CoverageLineMarkerRenderer` instances, and returns `line:STATUS:HAS_TOOLTIP:HAS_MENU` quadruplets (e.g. `SUCCESS\n6:COVERED:1:1,10:COVERED:1:1,14:UNCOVERED:1:1`), where `HAS_TOOLTIP` is `1` when the line's `RangeHighlighter` has a `GutterIconRenderer` with a non-blank tooltip and `HAS_MENU` is `1` when that renderer exposes a popup menu (`getPopupMenuActions()`).
 
 - `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitActionTestHelper`/`PitOutputReader`/`PitCoverageTestHelper` inside the test IDE over JMX. All test methods share a single IDE process (started once in `@BeforeAll`, closed in `@AfterAll`). Each test cleans the resolved report dir, runs PIT, waits for a NEW report (top-level `index.html` or a fresh timestamped subdir), asserts via `assertReportFiles()`, and leaves the report for the next test to clean. `waitForHtmlReport` never matches pre-existing/stale reports (they'd cause flaky false-passes or partial-report assertions). The coverage test asserts the exact map `{6: COVERED:1:1, 10: COVERED:1:1, 14: UNCOVERED:1:1}` — line 14 (`multiply`) is marked red because its mutations are `NO_COVERAGE`, and every annotated line must have a gutter icon with a non-blank tooltip and a popup menu, mirroring the report.

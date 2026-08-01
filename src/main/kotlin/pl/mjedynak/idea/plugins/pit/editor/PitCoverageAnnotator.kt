@@ -221,9 +221,9 @@ class PitCoverageAnnotator(
 
     private fun resolveSourceFileByName(mutatedClass: String): VirtualFile? {
         val sourceFileName = sourceFilesByClass[mutatedClass] ?: return null
-        val files = FilenameIndex.getFilesByName(project, sourceFileName, GlobalSearchScope.projectScope(project))
+        val files = FilenameIndex.getVirtualFilesByName(sourceFileName, GlobalSearchScope.projectScope(project))
         if (files.size == 1) {
-            return files.first().virtualFile
+            return files.first()
         }
         val openFiles =
             EditorFactory
@@ -232,7 +232,7 @@ class PitCoverageAnnotator(
                 .filter { it.project == project }
                 .mapNotNull { FileDocumentManager.getInstance().getFile(it.document) }
                 .toSet()
-        return files.firstOrNull { it.virtualFile in openFiles }?.virtualFile
+        return files.firstOrNull { it in openFiles }
     }
 
     private companion object {

@@ -1,23 +1,26 @@
 package pl.mjedynak.idea.plugins.pit.maven
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
+import java.nio.file.Files
+import java.nio.file.Path
 
 class MavenProjectDeterminerTest {
     private val projectDeterminer = MavenProjectDeterminer()
     private val project: Project = mock()
-    private val baseDir: VirtualFile = mock()
+
+    @TempDir
+    lateinit var tempDir: Path
 
     @Test
     fun `should determine that project is mavenized if it has pom xml`() {
-        whenever(project.baseDir).thenReturn(baseDir)
-        val pomFile: VirtualFile = mock()
-        whenever(baseDir.findChild(MavenProjectDeterminer.POM_FILE)).thenReturn(pomFile)
+        Files.createFile(tempDir.resolve(MavenProjectDeterminer.POM_FILE))
+        whenever(project.basePath).thenReturn(tempDir.toString())
 
         val result = projectDeterminer.isMavenProject(project)
 
@@ -26,7 +29,7 @@ class MavenProjectDeterminerTest {
 
     @Test
     fun `should determine that project is not mavenized if pom xml not found`() {
-        whenever(project.baseDir).thenReturn(baseDir)
+        whenever(project.basePath).thenReturn(tempDir.toString())
 
         val result = projectDeterminer.isMavenProject(project)
 

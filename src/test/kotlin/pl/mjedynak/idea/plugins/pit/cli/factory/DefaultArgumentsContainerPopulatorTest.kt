@@ -3,11 +3,11 @@ package pl.mjedynak.idea.plugins.pit.cli.factory
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.io.TempDir
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -23,7 +23,8 @@ import pl.mjedynak.idea.plugins.pit.cli.model.PitCommandLineArgument.TARGET_CLAS
 import pl.mjedynak.idea.plugins.pit.gradle.GradleProjectDeterminer
 import pl.mjedynak.idea.plugins.pit.maven.MavenPomReader
 import pl.mjedynak.idea.plugins.pit.maven.MavenProjectDeterminer
-import java.io.InputStream
+import java.nio.file.Files
+import java.nio.file.Path
 
 class DefaultArgumentsContainerPopulatorTest {
     private val project: Project = mock()
@@ -35,6 +36,9 @@ class DefaultArgumentsContainerPopulatorTest {
     private val defaultArgumentsContainerPopulator =
         DefaultArgumentsContainerPopulator(projectRootManager, psiManager)
     private val container: PitCommandLineArgumentsContainer = PitCommandLineArgumentsContainerImpl()
+
+    @TempDir
+    lateinit var tempDir: Path
 
     @BeforeEach
     fun setUp() {
@@ -55,9 +59,7 @@ class DefaultArgumentsContainerPopulatorTest {
     @Test
     fun `should create container with default report dir`() {
         val baseDirPath = "app"
-        val baseDir: VirtualFile = mock()
-        whenever(project.baseDir).thenReturn(baseDir)
-        whenever(baseDir.path).thenReturn(baseDirPath)
+        whenever(project.basePath).thenReturn(baseDirPath)
 
         defaultArgumentsContainerPopulator.addReportDir(project, container)
 
@@ -67,9 +69,7 @@ class DefaultArgumentsContainerPopulatorTest {
     @Test
     fun `should create container with maven default report dir for maven project`() {
         val baseDirPath = "app"
-        val baseDir: VirtualFile = mock()
-        whenever(project.baseDir).thenReturn(baseDir)
-        whenever(baseDir.path).thenReturn(baseDirPath)
+        whenever(project.basePath).thenReturn(baseDirPath)
         whenever(mavenProjectDeterminer.isMavenProject(project)).thenReturn(true)
 
         defaultArgumentsContainerPopulator.addReportDir(project, container)
@@ -80,9 +80,7 @@ class DefaultArgumentsContainerPopulatorTest {
     @Test
     fun `should create container with gradle default report dir for gradle project`() {
         val baseDirPath = "app"
-        val baseDir: VirtualFile = mock()
-        whenever(project.baseDir).thenReturn(baseDir)
-        whenever(baseDir.path).thenReturn(baseDirPath)
+        whenever(project.basePath).thenReturn(baseDirPath)
         whenever(gradleProjectDeterminer.isGradleProject(project)).thenReturn(true)
 
         defaultArgumentsContainerPopulator.addReportDir(project, container)
@@ -121,16 +119,12 @@ class DefaultArgumentsContainerPopulatorTest {
 
     @Test
     fun `should create container with target classes from group id for maven project`() {
-        val baseDir: VirtualFile = mock()
-        val pomVirtualFile: VirtualFile = mock()
-        val pomFile: InputStream = mock()
+        Files.writeString(tempDir.resolve(MavenProjectDeterminer.POM_FILE), "<project/>")
         val groupId = "pl.mjedynak"
 
-        whenever(project.baseDir).thenReturn(baseDir)
-        whenever(baseDir.findChild(MavenProjectDeterminer.POM_FILE)).thenReturn(pomVirtualFile)
-        whenever(pomVirtualFile.inputStream).thenReturn(pomFile)
+        whenever(project.basePath).thenReturn(tempDir.toString())
         whenever(mavenProjectDeterminer.isMavenProject(project)).thenReturn(true)
-        whenever(mavenPomReader.getGroupId(pomFile)).thenReturn(groupId)
+        whenever(mavenPomReader.getGroupId(any())).thenReturn(groupId)
 
         defaultArgumentsContainerPopulator.addTargetClasses(project, container)
 

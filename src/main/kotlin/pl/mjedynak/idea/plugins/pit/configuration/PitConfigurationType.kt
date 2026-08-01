@@ -1,11 +1,8 @@
 package pl.mjedynak.idea.plugins.pit.configuration
 
-import com.intellij.execution.configuration.ConfigurationFactoryEx
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
-import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.openapi.extensions.Extensions
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.IconLoader
 import com.intellij.util.containers.ContainerUtil
@@ -14,17 +11,13 @@ import javax.swing.Icon
 
 class PitConfigurationType : ConfigurationType {
     private val myFactory: ConfigurationFactory =
-        object : ConfigurationFactoryEx<RunConfiguration>(this) {
+        object : ConfigurationFactory(this) {
             override fun createTemplateConfiguration(project: Project): RunConfiguration {
                 val pitRunConfigurationFactory = PitRunConfigurationFactory()
                 return pitRunConfigurationFactory.createConfiguration(project)
             }
 
             override fun getIcon(configuration: RunConfiguration): Icon = this@PitConfigurationType.icon
-
-            override fun onNewConfigurationCreated(configuration: RunConfiguration) {
-                (configuration as ModuleBasedConfiguration<*, *>).onNewConfigurationCreated()
-            }
 
             override fun getId(): @NonNls String = name
         }
@@ -47,7 +40,7 @@ class PitConfigurationType : ConfigurationType {
 
         fun getInstance(): PitConfigurationType? =
             ContainerUtil.findInstance(
-                Extensions.getExtensions(ConfigurationType.CONFIGURATION_TYPE_EP),
+                ConfigurationType.CONFIGURATION_TYPE_EP.extensionList,
                 PitConfigurationType::class.java,
             )
     }

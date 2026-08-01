@@ -1,7 +1,8 @@
 package pl.mjedynak.idea.plugins.pit.actions
 
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKeys
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.PlatformCoreDataKeys
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -18,13 +19,13 @@ abstract class DirectoryOrFilePitAction : PitAction() {
     ): Boolean
 
     override fun update(e: AnActionEvent) {
-        val project = e.getData(DataKeys.PROJECT)
-        val module = e.getData(DataKeys.MODULE)
-        val vfile = e.getData(DataKeys.VIRTUAL_FILE)
+        val project = e.getData(CommonDataKeys.PROJECT)
+        val module = e.getData(PlatformCoreDataKeys.MODULE)
+        val vfile = e.getData(CommonDataKeys.VIRTUAL_FILE)
         val enabled = project != null && module != null && vfile != null && isEnabled(project, module, vfile)
         e.presentation.isEnabledAndVisible = enabled
-        if (enabled) {
-            e.presentation.text = getTitleForItem(vfile!!.presentableName)
+        if (project != null && module != null && vfile != null && enabled) {
+            e.presentation.text = getTitleForItem(vfile.presentableName)
         }
     }
 
@@ -35,9 +36,9 @@ abstract class DirectoryOrFilePitAction : PitAction() {
     ): PitRunConfiguration
 
     override fun getConfigurationForActionEvent(e: AnActionEvent): PitRunConfiguration? {
-        val project = e.getData(DataKeys.PROJECT) ?: return null
-        val module = e.getData(DataKeys.MODULE) ?: return null
-        val vfile = e.getData(DataKeys.VIRTUAL_FILE) ?: return null
+        val project = e.getData(CommonDataKeys.PROJECT) ?: return null
+        val module = e.getData(PlatformCoreDataKeys.MODULE) ?: return null
+        val vfile = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return null
         if (!isEnabled(project, module, vfile)) return null
 
         val classNames =
