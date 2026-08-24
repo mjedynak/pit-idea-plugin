@@ -25,7 +25,7 @@ class ClassPathPopulator {
         classPath.pathList.none { it.contains("junit-platform-launcher") }
 
     companion object {
-        const val PITEST_VERSION = "1.25.8"
+        const val PITEST_VERSION = "1.25.9"
         const val PITEST_JUNIT5_PLUGIN_VERSION = "1.2.3"
         val SEPARATOR: String = FileSystems.getDefault().separator
         const val PLUGIN_NAME = "pit-idea-plugin"
