@@ -74,7 +74,7 @@ class PitPluginIntegrationTest {
                     .newContext(
                         testName = "pitIntegrationSuite",
                         TestCase(
-                            IdeInfo.IdeaUltimate,
+                            IdeInfo.IdeaUltimate.copy(buildNumber = "262.10315.19"),
                             LocalProjectInfo(projectPath),
                         ),
                     ).apply {
