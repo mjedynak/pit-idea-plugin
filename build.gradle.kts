@@ -7,7 +7,7 @@ plugins {
 }
 
 
-val pitVersion = "1.25.9"
+val pitVersion = "1.30.0"
 val pitJunit5PluginVersion = "1.2.3"
 
 kotlin {

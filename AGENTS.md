@@ -4,7 +4,7 @@
 
 ## Project Overview
 
-IntelliJ IDEA plugin for [PIT Mutation Testing](http://pitest.org). Adds a run configuration and context menu actions to execute PIT directly within the IDE. After a run finishes, mutation lines are marked in the editor with color-coded gutter bands mirroring the PIT HTML report: light green for covered lines (mutations `KILLED`/`NON_VIABLE`), light red for uncovered lines (any `SURVIVED`/`NO_COVERAGE`), blue-grey for other statuses; each band carries the mutation descriptions as a hover tooltip (gutter icon + scrollbar stripe) and a right-click context menu to clear the markings. Current version: **1.4.13-SNAPSHOT**, bundling PIT **1.25.9** and JUnit5 plugin **1.2.3**.
+IntelliJ IDEA plugin for [PIT Mutation Testing](http://pitest.org). Adds a run configuration and context menu actions to execute PIT directly within the IDE. After a run finishes, mutation lines are marked in the editor with color-coded gutter bands mirroring the PIT HTML report: light green for covered lines (mutations `KILLED`/`NON_VIABLE`), light red for uncovered lines (any `SURVIVED`/`NO_COVERAGE`), blue-grey for other statuses; each band carries the mutation descriptions as a hover tooltip (gutter icon + scrollbar stripe) and a right-click context menu to clear the markings. Current version: **1.4.13-SNAPSHOT**, bundling PIT **1.30.0** and JUnit5 plugin **1.2.3**.
 
 ## Build & Run Commands
 
@@ -80,7 +80,7 @@ META-INF/plugin.xml                # Plugin descriptor (actions, extensions)
 - **Languages**: Kotlin (all plugin source code)
 - **Build**: Gradle 9.6.1, Kotlin DSL, IntelliJ Platform Gradle Plugin 2.18.1
 - **Target**: IntelliJ IDEA 2026.2, Java 25 toolchain
-- **PIT**: 1.25.9 (bundled as non-transitive dependencies)
+- **PIT**: 1.30.0 (bundled as non-transitive dependencies)
 - **Testing**: JUnit 5 (Jupiter 6.1.1) + Mockito-Kotlin 6.3.0
 - **Formatting**: Spotless — ktlint (Kotlin)
 
@@ -162,7 +162,7 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
 - `processTerminated` first resolves the report dir via `resolveReportDir()` on the executor thread and passes the resulting `File` into the `invokeLater` lambda — it is NOT re-resolved on the EDT.
 - `PitCoverageAnnotator.updateFromReport(reportDir)` returns a one-line summary (`"PIT coverage: N mutations, M classes, K covered + U uncovered line(s) marked in E open editor(s). Classes: <class> -> <path>|NOT FOUND, ..."`) that `processTerminated` prints to the run console — the per-class resolution and the *actually marked* line count (not just open editors) are the first place to look when a user reports "no coverage in the editor". It also `LOG.warn`s when: no `mutations.xml` is found, parsing fails, the report contains NO mutations at all (usually means PIT ran 0 tests, e.g. a JUnit launcher/engine version mismatch), or a class cannot be resolved to an editor file.
 - `resolveFileForClass` accepts only a real source file from `findClass` (`.java`/`.kt`); a class-file PSI from compiled output or a dependency would never match an open editor, so it falls back to `FilenameIndex` by the `sourceFile` name from `mutations.xml`, preferring a file that is currently open in an editor.
-- The console "Open report in browser" link prefers the top-level `reportDir/index.html` (PIT 1.25.9 layout) and falls back to the latest timestamped subdirectory for older layouts. `DirectoryReader.getLatestDirectoryFrom` only returns subdirectories, so it must NOT be used directly to build the link for top-level reports.
+- The console "Open report in browser" link prefers the top-level `reportDir/index.html` (PIT 1.30.0 layout) and falls back to the latest timestamped subdirectory for older layouts. `DirectoryReader.getLatestDirectoryFrom` only returns subdirectories, so it must NOT be used directly to build the link for top-level reports.
 - PIT's `mutations.xml` contains one `<mutation>` per mutation with a `status` attribute. All mutations are parsed and kept, then aggregated per source line: a line is `COVERED` (green) if it has KILLED/NON_VIABLE mutations, `UNCOVERED` (red) if any mutation is SURVIVED/NO_COVERAGE (red takes precedence), else `UNKNOWN` (blue-grey, e.g. TIMED_OUT). Report colors are mirrored: covered `#aaffaa`, uncovered `#ffaaaa`, other `#dde7ef`. Each highlighter sets `errorStripeMarkColor` + `errorStripeTooltip` carrying the report-style description list (`1. add : Replaced integer addition with subtraction → KILLED`), so hovering the scrollbar stripe shows the mutation descriptions.
 - **Tooltips are visible on the band itself, not just the scrollbar stripe**: each annotated line's `RangeHighlighter` also gets a `GutterIconRenderer` via `RangeHighlighter.setGutterIconRenderer(...)`. The renderer implements `DumbAware`, uses `GutterIconRenderer.Alignment.LEFT`, and returns a small status-colored square `Icon` (dark band colors: covered `0x2F6B2F`, uncovered `0x8B3333`, other `0x3A4A5C`; drawn as an 8x8 rounded rect) plus `getTooltipText()` = the SAME report-style description text as the error-stripe tooltip (built once per line by `buildTooltip`, shared by both). Hovering the gutter icon shows the descriptions directly in the editor. **Right-clicking the gutter icon opens a context menu with "Clear PIT coverage markings"** (via `getPopupMenuActions()` returning a `DefaultActionGroup` with a `DumbAware` `AnAction`); the action calls `PitCoverageAnnotator.clearAnnotations()` directly — actions run on the EDT, so no `invokeLater` is needed, and the renderer receives the `Project` at construction to resolve the service. The renderer is skipped when a line's tooltip is blank. Removing the highlighter releases the renderer — no manual cleanup.
 - **`CoverageLineMarkerRenderer` must implement `LineMarkerRendererEx` with `Position.LEFT`.** A plain `LineMarkerRenderer` defaults to the RIGHT free-painters area, which has zero width on the New UI (2022.1+) — the renderer is attached to the markup model (integration test polls for it and passes) but `paint()` draws into a 0-width rect, so nothing is ever visible. This cost three rounds of "no coverage in the editor" debugging before being identified. The LEFT area always has a guaranteed minimum width.
@@ -173,9 +173,9 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
 
 | Location | What | Current        |
 |----------|------|----------------|
-| `build.gradle.kts` | `val pitVersion` / `val pitJunit5PluginVersion` | 1.25.9 / 1.2.3 |
-| `ClassPathPopulator.kt` | JAR filename strings | 1.25.9 / 1.2.3 |
-| `META-INF/plugin.xml` | Description text ("Bundled with PIT ...") | 1.25.9         |
+| `build.gradle.kts` | `val pitVersion` / `val pitJunit5PluginVersion` | 1.30.0 / 1.2.3 |
+| `ClassPathPopulator.kt` | JAR filename strings | 1.30.0 / 1.2.3 |
+| `META-INF/plugin.xml` | Description text ("Bundled with PIT ...") | 1.30.0         |
 
 `PitVersionConsistencyTest` enforces consistency between `build.gradle.kts`, `ClassPathPopulator.kt`, and `META-INF/plugin.xml` — it parses the build file and asserts the versions match in all locations.
 
@@ -208,6 +208,9 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
 
 ## Integration Test Troubleshooting
 
+### IDE build is pinned
+- `PitPluginIntegrationTest` pins the IDE build via `IdeInfo.IdeaUltimate.copy(buildNumber = "262.10315.19")`. The IntelliJ Starter framework (`ide-starter-product-idea-ultimate:262.8665.258` in `build.gradle.kts`) resolves the latest release dynamically, and newer 263.x builds dropped `com.jetbrains.performancePlugin.TestContext`, which the driver framework requires at startup — without the pin, integration tests fail with `ClassNotFoundException` before any test logic runs. When upgrading the starter framework, bump the pinned build number to a matching version.
+
 ### Test Project Model
 - Test project (`src/integrationTest/resources/testProject/`) is a Gradle project used ONLY for pre-compilation (via `compileTestProject`). The test IDE does NOT import Gradle — it opens `build/testProject` as a plain project using the committed `.idea/` XML files. The module's compiled output dirs and `junit5` module-library (pointing at `build/testLib/`) are what make PIT find the compiled classes and JUnit engine. If these are missing, PIT exits with `No mutations found` and no report.
 - The `build.gradle.kts` JUnit version MUST match both the committed `.iml` library (jar filenames in `build/testLib/`) and the plugin's bundled `junit-platform-launcher` version. Currently all are `6.1.1`. A mismatch (e.g., `5.11.1` in test project + `6.1.1` launcher) causes PIT to fail silently with `"Pitest could not run any tests"` because the launcher and engine versions are incompatible.
@@ -230,6 +233,6 @@ PitCoverageAnnotator.updateFromReport(File(reportDir))   # project service
 
 - `PitPluginIntegrationTest.kt` — `@Remote` stubs call `PitTestHelper`/`PitActionTestHelper`/`PitOutputReader`/`PitCoverageTestHelper` inside the test IDE over JMX. All test methods share a single IDE process (started once in `@BeforeAll`, closed in `@AfterAll`). Each test cleans the resolved report dir, runs PIT, waits for a NEW report (top-level `index.html` or a fresh timestamped subdir), asserts via `assertReportFiles()`, and leaves the report for the next test to clean. `waitForHtmlReport` never matches pre-existing/stale reports (they'd cause flaky false-passes or partial-report assertions). The coverage test asserts the exact map `{6: COVERED:1:1, 10: COVERED:1:1, 14: UNCOVERED:1:1}` — line 14 (`multiply`) is marked red because its mutations are `NO_COVERAGE`, and every annotated line must have a gutter icon with a non-blank tooltip and a popup menu, mirroring the report.
 ### PIT HTML Report Structure
-PIT 1.25.9 writes the report directly into the configured `--reportDir` (top-level `index.html`, `mutations.xml`, `calculator/` package pages). Older PIT created a timestamped subdirectory (e.g., `report/20260728.../index.html`); `DirectoryReader` and the test's `waitForHtmlReport` still support both layouts. The editor coverage annotation is driven by `mutations.xml` — `MutationReportParser` reads every `<mutation>`'s `lineNumber`/`sourceFile`/`mutatedClass`/`status` and keeps ALL of them; the annotator mirrors the report's `style.css` colors (covered `#aaffaa`, uncovered `#ffaaaa`, other `#dde7ef`) and puts the mutation descriptions (`<mutatedMethod> : <description> → <STATUS>`) into the error-stripe tooltip.
+PIT 1.30.0 writes the report directly into the configured `--reportDir` (top-level `index.html`, `mutations.xml`, `calculator/` package pages). Older PIT created a timestamped subdirectory (e.g., `report/20260728.../index.html`); `DirectoryReader` and the test's `waitForHtmlReport` still support both layouts. The editor coverage annotation is driven by `mutations.xml` — `MutationReportParser` reads every `<mutation>`'s `lineNumber`/`sourceFile`/`mutatedClass`/`status` and keeps ALL of them; the annotator mirrors the report's `style.css` colors (covered `#aaffaa`, uncovered `#ffaaaa`, other `#dde7ef`) and puts the mutation descriptions (`<mutatedMethod> : <description> → <STATUS>`) into the error-stripe tooltip.
 
 
